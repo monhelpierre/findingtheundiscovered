@@ -88,3 +88,23 @@ describe("field review confidence", () => {
     expect(merged.map((r) => r.id)).toEqual(["a", "b"]);
   });
 });
+
+describe("site CSV export", () => {
+  it("has the site, every criterion and every feature of the target", async () => {
+    const { cellRows, toCsv } = await import("../lib/cellExport");
+    const region = JSON.parse(readFileSync(path.join(data, "regions", "atacama-yungay.json"), "utf-8")) as RegionData;
+    const target = index.targets.find((t) => t.id === "mars_jezero")!;
+    const score = region.columns["score__mars_jezero"][0];
+    const rows = cellRows({ region, i: 0, index, target, score, scoreLabel: "overall similarity",
+      classes: scoreClasses(index.thresholds), conf: null });
+    expect(rows.filter((r) => r.section === "criterion")).toHaveLength(index.applies.mars.length);
+    expect(rows.filter((r) => r.section === "feature")).toHaveLength(Object.keys(target.features).length);
+    const csv = toCsv(rows).split("\r\n");
+    expect(csv[0]).toBe("section,item,value,unit,target,match,note");
+    expect(csv.every((line) => !line.includes("undefined"))).toBe(true);
+  });
+  it("quotes values with commas or quotes", async () => {
+    const { toCsv } = await import("../lib/cellExport");
+    expect(toCsv([{ section: "s", item: 'a, "b"', value: "1" }]).split("\r\n")[1]).toBe('s,"a, ""b""",1,,,,');
+  });
+});
