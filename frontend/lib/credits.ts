@@ -15,6 +15,6 @@ export const CREDITS = {
   ] as { name: string; url?: string }[],
   event: "NASA Space Apps Challenge 2026",
   location: "Sherbrooke",
-  repo: "https://github.com/elidjomekou/finding-the-undiscovered",
+  repo: "https://github.com/monhelpierre/findingtheundiscovered",
   license: "MIT",
 };
