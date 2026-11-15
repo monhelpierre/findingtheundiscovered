@@ -1,0 +1,30 @@
+# Where each region's data comes from. `analog sync REGION` (or --all):
+#   1. imports matching files from the inbox folder (anything you downloaded by hand,
+#      e.g. hackathon-provided data): SRTM, HLS, EMIT, in their original NASA file names;
+#   2. downloads from NASA (Earthdata) whatever is still missing.
+# Sources a region already has are skipped; `--force` redoes them, `--offline` never downloads.
+
+inbox: data/inbox
+
+sources:
+  srtm: {}
+  hls:
+    start: 2025-01-01
+    end: 2025-10-31
+    max_cloud: 10
+    scenes_per_tile: 2
+  emit:
+    max_granules: 3
+
+# Per-region overrides (glob patterns allowed). Set `enabled: false` to skip a source.
+regions:
+  atacama-*:
+    hls: {start: 2025-01-01, end: 2025-06-30, max_cloud: 5}
+  usa-mdrs:
+    hls: {start: 2025-03-01, end: 2025-10-31}
+  canada-*:
+    hls: {start: 2025-06-20, end: 2025-09-15, max_cloud: 20}   # summer only: no snow
+  eu-rio-tinto:
+    hls: {start: 2025-03-01, end: 2025-10-31}
+  haiti-*:
+    hls: {start: 2025-01-01, end: 2025-04-30, max_cloud: 15, scenes_per_tile: 4}  # dry season; fill pass gaps

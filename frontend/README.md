@@ -1,0 +1,134 @@
+# Frontend: the web app
+
+The map of [Earth Analog Explorer](../README.md): pick a Moon or Mars target, see how well every ~1 km cell of each study region matches it, and inspect the best candidate sites, criterion by criterion. Next.js 15 (App Router), React 19, MapLibre GL 5, TypeScript.
+
+It needs only the JSON written by the pipeline (`analog export`, see [backend/README.md](../backend/README.md)), which is copied into `public/data/`. It runs as a **static site** (Vercel, Firebase Hosting, any static host). When the optional [Django API](../backend/README.md#3-django-api) is running, it also offers weight sliders and team notes.
+
+## Contents
+
+1. [Setup](#1-setup)
+2. [Running and using the app](#2-running-and-using-the-app)
+3. [Tests](#3-tests)
+4. [Configuration](#4-configuration)
+5. [Deployment](#5-deployment)
+6. [Troubleshooting](#6-troubleshooting)
+
+---
+
+## 1. Setup
+
+Node.js 18.18+ (tested with 22).
+
+```bash
+cd frontend
+npm install
+npm run dev            # http://localhost:3000
+```
+
+```text
+frontend/
+├── app/                      # layout, page, styles (light and dark theme)
+├── components/               # Explorer (side panel), MapView (MapLibre), CriteriaRadar, ClientShell
+├── lib/                      # types, the scoring maths (mirrors Python), API client with static fallback
+├── public/data/              # copy of data/export/: what the site shows (committed)
+├── scripts/sync-data.mjs     # copies ../data/export into public/data
+├── tests/                    # Vitest
+├── firebase.json, firebase.static.json, .firebaserc   # Firebase Hosting, with / without the API rewrite
+└── next.config.ts            # dev: /api forwarding; build: static export to out/
+```
+
+## 2. Running and using the app
+
+[`frontend/`](): Next.js 15 (App Router), React 19, MapLibre GL 5, TypeScript.
+
+### 2.1 Run it
+
+```bash
+cd frontend
+npm run dev            # http://localhost:3000
+```
+
+| Mode | What you get |
+|---|---|
+| Frontend only | Data from `public/data/` (the last export). Everything works except weight sliders and notes |
+| Frontend + backend (start `runserver` **first**) | If a backend answers at `http://127.0.0.1:8000` when `npm run dev` starts (or `BACKEND_URL` is set), `/api/**` is forwarded to it. The footer says **"served by the backend"**. Started the backend later? Restart `npm run dev` |
+
+### 2.2 Using the app
+
+| Part | What it does |
+|---|---|
+| **Colour the map by** | Similarity to one Moon or Mars target, or (if trained) the classifier's "any analog" or one analog type |
+| **Target card** | The target's profile: value ± sigma (or ≥ / ≤) and weight per feature. With the backend, each weight is a **slider**: the map and candidates are re-scored for the current region; **Reset weights** goes back |
+| **Classifier card** | Training summary and validation per hidden site, with the **top-10%** pass/fail |
+| **Earth region** | Switches region and lists its layers |
+| **Map** | Satellite imagery with the score grid, the region outline and numbered candidates. Hover for a score; click a cell for details |
+| **Selected cell** | Coordinates and a Google Maps link, then three sections. **Overall score and tier**, with a note if the cell is near a known analog. **Criteria:** a **radar chart** and a table of each criterion's score and band. **Features:** a match bar per feature. With the backend, also **team notes** |
+| **Top candidates** | Best cells across regions, ordered by tier then score, with their tier badge. Click one to fly there |
+| **Footer** | When the data was exported, where it came from (backend or static copy), and **Reload data** |
+
+The layout adapts to phones and follows the system's light or dark theme.
+
+### 2.3 How it works
+
+- **Loading:** the app asks the backend first (`/api/index`, `/api/regions/<id>`) and falls back to the static files (`/data/index.json`, `/data/regions/<id>.json`). The site therefore always shows the map, even with no backend.
+- **Same maths in the browser:** `lib/similarity.ts` computes the per-feature similarity, the criteria and the tiers for the selected cell with the same formulas as Python. A test checks it against every exported candidate.
+- **Production build:** `npm run build` writes a **static site** to `frontend/out/`, ready for Firebase Hosting or any static host. In development, `next.config.ts` adds the `/api` forwarding instead.
+- **Data copy:** `public/data/` is a copy of `data/export/`. `analog export` refreshes it, and `npm run sync-data` does the same by hand; it also runs automatically before `dev` and `build`. When `data/export/` doesn't exist (e.g. on a build server), the committed copy is kept.
+
+### 2.4 Scripts
+
+```bash
+npm run dev          # development server (forwards /api to the backend)
+npm run build        # static site in out/
+npx serve out        # preview the static build locally
+npm test             # Vitest
+npm run typecheck    # TypeScript
+npm run sync-data    # copy ../data/export into public/data
+```
+
+### 2.5 Worldwide screen and panel width
+
+- **Worldwide** (checkbox above the region menu, shown when the export has world tiles from `analog world import`): the candidate list becomes the best cells over every Earth Engine tile instead of the team's study regions, and the region menu lists the tiles that hold them. Known analogs and their 50 km zones stay excluded.
+- **Panel width:** drag the bar between the panel and the map (300–900 px). The width is remembered in this browser.
+
+## 3. Tests
+
+```bash
+npm test               # Vitest (42 tests, a few seconds)
+npm run typecheck      # TypeScript
+```
+
+| Suite | Covers |
+|---|---|
+| [`tests/similarity.test.ts`](tests/similarity.test.ts) | Per-feature similarity, criteria grouping, NDVI gate, tiers and bands |
+| [`tests/api.test.ts`](tests/api.test.ts) | Backend-first loading with static fallback (HTML 404, network error), weights as query parameters, team-token header, error messages |
+| [`tests/export-consistency.test.ts`](tests/export-consistency.test.ts) | For every exported candidate, the browser's criteria scores and tier equal Python's |
+
+## 4. Configuration
+
+| Variable | Default | Effect |
+|---|---|---|
+| `BACKEND_URL` | `http://127.0.0.1:8000` | Where `npm run dev` forwards `/api/**` |
+| `ANALOG_EXPORT_DIR` | `../data/export` | Where `npm run sync-data` copies from |
+
+`package.json` pins `@maplibre/geojson-vt` to 6.3.0 (`overrides`): version 6.3.1 ships type files that import its raw sources and break the typecheck.
+
+## 5. Deployment
+
+| Option | How | Gets you |
+|---|---|---|
+| **Vercel** (simplest) | Import the repository, set **Root Directory = `frontend`**, keep the defaults | The whole app as a static site |
+| **Firebase Hosting, free plan** | `npm run build`, then `firebase deploy --only hosting --config firebase.static.json` | The same, on `https://PROJECT_ID.web.app` |
+| **Firebase Hosting + Cloud Run** | Deploy the API ([backend/README.md](../backend/README.md#7-deployment)), then `npm run build` and `firebase deploy --only hosting` | Plus the API: weight sliders and team notes |
+
+What the site shows is `public/data/`. To publish new results: `analog export` (it refreshes `public/data/`), commit, push or redeploy.
+
+## 6. Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| App shows "No data yet" | Run `analog demo` or `analog export` |
+| App doesn't show new results | Click **Reload data** (the export copies to `frontend/public/data/` automatically) |
+| Footer says "static copy" though the backend runs | The backend wasn't up when `npm run dev` started: restart `npm run dev` (or set `BACKEND_URL`) |
+| `EADDRINUSE` when starting the app | An old server holds the port: stop it or use `npm run dev -- --port 3001` |
+| Hydration warning with attributes like `bis_skin_checked` | A browser extension rewrote the page; try a private window |

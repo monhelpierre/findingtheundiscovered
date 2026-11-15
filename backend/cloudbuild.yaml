@@ -1,0 +1,14 @@
+# Build the API image in Cloud Build (no Docker needed on your PC). Run from the repo root:
+#   gcloud builds submit --config backend/cloudbuild.yaml --ignore-file backend/.gcloudignore
+#     --substitutions _REGION=us-east1 .
+# backend/.gcloudignore keeps the large data/ folder out of the upload.
+substitutions:
+  _REGION: us-east1
+  _REPO: analog
+  _IMAGE: analog-api
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ["build", "-f", "backend/Dockerfile",
+           "-t", "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:latest", "."]
+images:
+  - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:latest"

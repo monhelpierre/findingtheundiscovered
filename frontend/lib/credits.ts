@@ -1,0 +1,20 @@
+/** Project and team credits shown at the bottom of the side panel. Edit here only. */
+export const CREDITS = {
+  project: "Finding the Undiscovered",
+  app: "Earth Analog Explorer",
+  /** Team name, if the team picks one; leave empty to show only the members. */
+  team: "",
+  /** `url` (e.g. LinkedIn) makes the name a link; leave it out to show the name only. */
+  members: [
+    { name: "Guilhem", url: "https://www.linkedin.com/in/guilhem-calas/" },
+    { name: "Eli", url: "https://www.linkedin.com/in/eli-djomekou-7a49bb123/" },
+    { name: "Meriem", url: "https://www.linkedin.com/in/meriem-sarra-tairi/" },
+    { name: "Monhel", url: "https://www.linkedin.com/in/monhelmaudoonypierre/" },
+    { name: "Leea" },
+    { name: "Florian" },
+  ] as { name: string; url?: string }[],
+  event: "NASA Space Apps Challenge 2026",
+  location: "Sherbrooke",
+  repo: "https://github.com/elidjomekou/finding-the-undiscovered",
+  license: "MIT",
+};

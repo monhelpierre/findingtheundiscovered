@@ -1,0 +1,128 @@
+1. Définition et composition de l’Artemis Base Camp (§4.2)
+Décrit comme « la première station de terrain permanente de l’humanité sur un autre monde », visée avant la fin des années 2020.
+Configuration initiale, trois éléments : un Foundational Surface Habitat (FSH), des systèmes de puissance, des systèmes de mobilité.
+À mesure que l’infrastructure de surface s’ajoute, les expéditions pourront durer plusieurs jours lunaires ou davantage.
+Rover pressurisé : combine habitation et mobilité, permet de s’éloigner de plusieurs dizaines de kilomètres de l’atterrisseur en environnement « shirt-sleeve », scaphandre uniquement pour les EVA.
+Habitat de surface : étend la durée de vie et de travail en environnement pressurisé ; le FSH est jugé « composant essentiel » pour les activités scientifiques nécessitant des installations de recherche et de longues durées.
+En orbite, le Gateway sert de « module de commande permanent » pour toutes les activités lunaires (transfert équipage/logistique + recherche hors magnétosphère).
+Continuum matériel envisagé (Fig. 4.1) : EVA, rovers non pressurisés et pressurisés, habitats stationnaires, et systèmes de support associés comme les centrales électriques.
+2. Critères de localisation : pourquoi la région polaire sud (§4.1)
+
+Région polaire sud définie comme la zone située à moins de 6° de latitude du pôle sud lunaire. Deux bénéfices opérationnels décisifs ont motivé le choix pour Artemis III et pour la Base Camp :
+
+a) Accès à des zones d’illumination persistante
+
+Les caractéristiques physiographiques (pentes, densité de cratères, rugosité) de la région ne diffèrent pas substantiellement du reste de la Lune — c’est l’angle solaire très faible qui crée l’avantage.
+Des zones ont été identifiées comme illuminées plus de 200 jours par an ; elles sont peu nombreuses mais offrent : régime de température plus favorable, durée réduite des nuits lunaires, disponibilité persistante d’énergie solaire.
+Ouvre la voie à des missions plus précoces, plus capables, et à des opérations de surface de durée étendue.
+
+b) Accès potentiel à des dépôts de volatils exploitables à grande échelle
+
+La même topographie bloque la lumière dans certaines zones → régions en ombre permanente (PSR) piégeant les espèces volatiles.
+Ressources visées : hydrogène et oxygène accessibles, pour « vivre sur le pays ».
+Condition explicite : il faut que la teneur (grade) et le tonnage de ces dépôts soient caractérisés pour qu’une économie cislunaire en découle (réduction des coûts de logistique et de ravitaillement).
+L’hydrogène et l’oxygène extraits aux pôles et transportés en espace cislunaire seraient habilitants pour les expéditions vers d’autres destinations.
+
+Finalité stratégique (§4.1) : utiliser la Lune comme banc d’essai pour l’indépendance vis-à-vis de la Terre, via des opérations extraterrestres de fabrication et d’extraction minière, avec croissance commerciale et participation internationale.
+
+3. Critères de sélection de site (§9.0)
+
+Facteurs reconnus comme hors du contrôle du SDT mais déterminants : capacités des véhicules HLS, fenêtre de lancement finale, disponibilité de données orbitales suffisantes pour la sélection et la détermination de la sûreté d’atterrissage, sites des missions précurseurs, et décisions d’architecture relatives à l’emplacement de l’Artemis Base Camp.
+
+Paramètres physiographiques de base : abondance de blocs, fréquence des cratères, pente.
+
+Facteurs recommandés par le SDT :
+
+Illumination suffisante pour des stations d’énergie solaire de longue durée, si cette solution est retenue pour alimenter des expériences de surface longue durée ;
+Disponibilité d’une gamme de tailles de cratères pour traverses radiales et échantillonnage ;
+Opportunités d’échantillonnage complètes (géologie du site, liens avec les processus de surface et internes) ;
+Accessibilité de blocs de grande taille (échantillonnage des éjectas de grands cratères) ;
+Proximité et accessibilité de régions majoritairement ou totalement en ombre permanente (processus des volatils) ;
+Proximité de plusieurs unités géologiques d’âges time-stratigraphiques différents ;
+Proximité d’unités géologiques permettant des investigations prioritaires spécifiques (chronologie des bassins, PSR).
+
+Critères additionnels mentionnés en légende de la Fig. 9.1 pour les sites d’intérêt : accès de longue durée à la lumière solaire, communication directe vers la Terre (direct-to-Earth), pente et rugosité de surface moins contraignantes pour les atterrisseurs et les astronautes, et présence de volatils « mission-enhancing ».
+
+4. Critères d’énergie et de communication (§7.1)
+Les expériences déployées de longue durée exigent des sources d’énergie permettant de survivre et d’opérer pendant la nuit lunaire ; les opérations de nuit lunaire sont qualifiées d’essentielles à une présence soutenue (LEAG 2019).
+Les opérations en régions polaires — en particulier dans les PSR et lors du passage du terminateur — peuvent dépendre entièrement de cette capacité nuit lunaire.
+Référence de dimensionnement héritée : les RTG SNAP-27 d’Apollo (ALSEP), 70 W en continu, permettant survie et opérations nocturnes ; une source comparable est jugée habilitante.
+Architecture ALSEP citée en modèle : instruments géophysiques et environnementaux reliés à une station de base centrale.
+5. Critères de mobilité (§7.3)
+Artemis III n’inclut pas de rover ; pour Artemis IV et au-delà, NASA prévoit de pré-positionner le Lunar Terrain Vehicle (LTV), rover non pressurisé, pour étendre le rayon d’exploration.
+Des systèmes de mobilité robustes sont jugés vitaux pour l’exploration et le développement à long terme : la géographie lunaire est complexe et les ressources sont dispersées.
+L’évaluation des sites candidats pour la future Base Camp est explicitement citée comme illustrant l’échelle du problème de mobilité.
+Une plateforme de mobilité habitable est un élément « particulièrement important » — la première mission martienne utilisera un engin de type similaire.
+Hors EVA, l’équipage est confiné au rayon dicté par les capacités du scaphandre.
+6. Critères de pré-déploiement et d’installation du site (§7.2)
+
+Bénéfices du pré-positionnement d’actifs (via CLPS ou autre atterrisseur robotique) :
+
+Levé détaillé et caractérisation initiale de la zone d’atterrissage habitée avant l’arrivée humaine ;
+Aides de navigation de précision indépendantes pour l’atterrissage ;
+Documentation vidéo et suivi des interactions HLS/surface à l’atterrissage ;
+Extension de contingence du temps de séjour en surface (consommables et pièces de rechange supplémentaires) ;
+Démonstration de rendez-vous en surface, applicable aux opérations lunaires soutenues et transposable à Mars (composante critique de la Mars DRA 5.0).
+
+Recommandation 7.2-1 : pré-positionner des actifs scientifiques à proximité du site — cache inerte d’outils/instruments, et/ou un ou plusieurs atterrisseurs ou rovers instrumentés pour le suivi environnemental.
+
+Un package environnemental déployé avant l’arrivée des astronautes fournirait lumière/obscurité, ombres, températures, radiations — données qui « influenceraient probablement la conception d’une partie de l’infrastructure de la Base Camp » (§6.3).
+
+7. Critères environnementaux à mesurer pour concevoir l’habitat (Goal 7m)
+
+Pour « mieux préparer et concevoir les installations de recherche des capacités Artemis ultérieures, tel le Foundational Surface Habitat », mesures détaillées requises :
+
+plasma, gravité, radiations, température, accumulation de poussière, activité sismique, flux d’impacts actuel et vibrations associées.
+Investigation 7m-1 : établir une station de surveillance environnementale lunaire mesurant température, vibrations, collecte de poussière, radiations, activité sismique, gravité.
+Surveillance en temps réel des variables affectant la sûreté des opérations : météores, micrométéorites, débris spatiaux.
+
+Risques environnementaux spécifiques au pôle sud documentés :
+
+Escarpements lobés / failles de chevauchement potentiellement encore actifs : leur nombre, distribution et activité sismique ont des « implications de sûreté pour l’infrastructure soutenant une présence humaine durable au pôle sud lunaire » (Goal 1d).
+Électrodynamique polaire (Goals 7k/7l) : plasma du vent solaire s’écoulant quasi-horizontalement, mini-sillages/vides de plasma en aval des massifs et dans les cratères polaires, potentiels de surface fortement négatifs (jusqu’à quelques milliers de volts négatifs côté nuit) → tribo-chargement des systèmes humains circulant sur le régolithe.
+Poussière : comportement et dynamique, effets sur les surfaces radiatives, d’habitat, de transport, de scaphandre et optiques exposées.
+8. Critères de construction et d’ISRU (Goals 6k–6o)
+Goal 6l — béton lunaire : « la construction d’habitats, d’abris et de surfaces préparées sera nécessaire pour des opérations durables à long terme ». Données quasi inexistantes sur un béton fait de régolithe réel et sur sa durabilité ; investigations sur le mélange de matériaux terrestres avec le régolithe, l’usage de moules, la performance et la durabilité, et l’exposition d’échantillons préfabriqués en simulant.
+Goal 6k — matériaux longue exposition : températures extrêmes, bombardement micrométéoritique et radiations affectent l’intégrité à long terme des matériaux ; analyse des matériaux de l’ère Apollo + placement d’échantillons témoins.
+Goal 6m — inflammabilité : la gravité partielle pourrait constituer le pire cas pour la sécurité incendie.
+Goal 6n — conversion glace d’eau → H₂/O₂ gazeux et liquéfaction pour stockage de propergol : influence de la gravité sur le changement de phase, sédimentation du régolithe dans l’eau liquide, écoulement des bulles en électrolyse en gravité partielle, condensation lors de la liquéfaction.
+Goal 6o — gestion de l’eau dans les systèmes de culture : nécessaires aux opérations durables comme système de support-vie biorégénératif (stabilité des écoulements dans le simulant, aération/hydratation racinaire, capillarité vs drainage gravitaire, hydroponie).
+Goal 7g — plantes et alimentation : la durabilité des missions longues et de l’habitation pourra inclure la production de cultures ; sachets de graines laissés en surface pour récupération par des missions ultérieures (viabilité, germination, nutrition).
+Biofilms : formation sur les matériaux couramment utilisés pour les habitats de surface.
+Plaque témoin mécanique pour l’exposition longue durée en espace profond et l’adhésion de la poussière.
+9. Paramètres de ressources et géotechniques requis (§6.5)
+
+Mesures d’Artemis III qui alimentent directement l’exploitation et la construction :
+
+composition des gelées (frost) de surface ; localisation des gelées pour cartographie ;
+spéciation de l’hydrogène ; abondance de l’hydrogène dans les profondeurs de stabilité de la glace ;
+distribution de l’hydrogène de surface de 1 m à au moins 1000 m ;
+établissement d’une station de surveillance environnementale ;
+distribution des micro-pièges froids dans les régions majoritairement illuminées ;
+distribution de l’eau/OH à l’intérieur d’une PSR ;
+géomorphologie/stratigraphie du régolithe jusqu’à 1 m de profondeur ;
+propriétés géotechniques : distribution granulométrique, densité spécifique, densité apparente (bulk density), compressibilité, capacité portante (bearing capacity).
+
+Deux livrables explicitement destinés à la construction de la Base Camp :
+
+la distribution de fréquence des tailles de blocs en surface ;
+la validation des modèles de conditions d’éclairement.
+
+Objectif global : améliorer la compréhension du grade et du tonnage des dépôts de ressources du pôle sud, et guider les procédés industriels et les stratégies d’extraction du régolithe.
+
+10. Contraintes et sensibilités imposées par la présence humaine (§6.3)
+Si l’activité humaine dans la zone est trop perturbatrice, certaines mesures sont compromises : astronautes marchant sur des concentrations de volatils proches de la surface → perturbation mécanique et thermique altérant l’état naturel et la distribution des volatils.
+Le dégazage des scaphandres peut contribuer à des dépôts de volatils de surface endémiques.
+Antécédent Apollo cité : des perturbations thermiques ont été initiées lors de l’implantation des expériences par l’activité des astronautes.
+Protection planétaire : survie des microbes introduits par l’exploration humaine, comportement des contaminants terrestres introduits.
+11. Contraintes opérationnelles de la mission habitée (§4.3, §4.4)
+Artemis III : 6,5 jours en surface ; minimum requis 1 EVA planifiée + 1 EVA de contingence, objectif au moins 4 sorties avec réserve pour une 5ᵉ.
+Le nombre et la durée des EVA dépendent de la masse descendante autorisée sur le HLS et de l’allocation des ressources scaphandres/PLSS.
+Finding 6.4-1 : les allocations de masse attendues sur le HLS sont insuffisantes pour atteindre tout le spectre des objectifs scientifiques.
+Curation des échantillons : approche par phases, partant d’actifs minimaux pour Artemis III, avec capacités croissantes à mesure que « l’infrastructure de surface lunaire devrait croître au cours de la décennie ».
+12. Documents de référence antérieurs cités sur ce sujet (§3.0)
+Morrison, D. (1990), A Site Selection Strategy for a Lunar Outpost: Science and Operational Parameters — la référence historique dédiée aux critères de sélection de site pour une base.
+LEAG Habitation Specific Action Team (HAB-SAT, 2005) et son rapport d’analyse (2006).
+Apollo Applications Program (années 1960-70) : séjours allongés, rovers pressurisés, logistique pré-placée, installations de surface permanentes.
+NASA’s Plan for Sustained Lunar Exploration and Development (2020) — source de la Fig. 9.1.
+Feuille de route : utiliser l’infrastructure de surface lunaire comme tremplin vers les petits corps, Mars et au-delà.

@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+# The `analog` data pipeline (CLI + library). The Django API in this folder reuses its scoring code;
+# the API's own dependencies are in requirements.txt (that's what the Cloud Run image installs).
+#   pip install -e "backend[dev,notebook]"     (from the repo root)
+[project]
+name = "analog"
+version = "0.1.0"
+description = "Find Earth analogs of Moon and Mars base sites (NASA Space Apps 2026)"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy",
+  "pandas",
+  "pyarrow",
+  "rasterio",
+  "netCDF4",
+  "earthaccess",
+  "scikit-learn",
+  "pyyaml",
+  "shapely>=2",
+  "joblib",
+]
+
+[project.optional-dependencies]
+# dev = everything needed to run the backend's tests (pipeline + API)
+dev = [
+  "pytest",
+  "pytest-django",
+  "Django>=5.2,<6",
+  "djangorestframework>=3.16",
+  "dj-database-url>=2.3",
+  "whitenoise>=6.9",
+  "ruff>=0.6",
+]
+notebook = ["ipykernel", "matplotlib", "folium"]
+
+[project.scripts]
+analog = "analog.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+# `pytest` in backend/ runs both suites: tests/test_pipeline.py and tests/test_api.py.
+testpaths = ["tests"]
+pythonpath = [".", "src"]
+DJANGO_SETTINGS_MODULE = "server.settings"
+
+[tool.ruff]
+# `ruff check .` and `ruff format --check .` in backend/ (CI runs the first).
+line-length = 120
+target-version = "py310"
+extend-exclude = ["api/migrations"]
+
+[tool.ruff.lint]
+# pycodestyle, pyflakes, import order, bugbear, pyupgrade
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+# FEATURE_INFO is a table of one-line descriptions shown in the app
+"src/analog/features.py" = ["E501"]

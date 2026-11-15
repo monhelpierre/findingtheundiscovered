@@ -1,0 +1,14 @@
+# Maps EMIT (and later CRISM) mineral names onto the shared groups used as features.
+# Each entry is a list of regular expressions matched against the lower-cased mineral name.
+#
+# EMIT assigns a best-fit mineral to almost every observed pixel, often with a very weak
+# absorption. A pixel only counts as a detection when its band depth is at least this value
+# (in Atacama test granules, the median band depth was ~0.06). Raise it for stricter maps.
+min_band_depth: 0.08
+
+groups:
+  phyllosilicate: [kaolin, montmorillon, smectite, nontron, saponite, illite, muscovite, chlorite, vermiculite, serpentin, halloysite, dickite, pyrophyllite]
+  sulfate: [gypsum, jarosite, alunite, anhydrite, bassanite, sulfate, sulphate, kieserite]
+  carbonate: [calcite, dolomite, carbonate, siderite, magnesite, ankerite, aragonite]
+  iron_oxide: [hematite, goethite, ferrihydrite, lepidocrocite, magnetite]
+  mafic: [olivine, forsterite, fayalite, pyroxene, augite, diopside, enstatite, bronzite]

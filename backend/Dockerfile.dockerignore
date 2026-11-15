@@ -1,0 +1,10 @@
+# Used by `docker build -f backend/Dockerfile .` (BuildKit reads <Dockerfile>.dockerignore).
+# The build context is the repo root, but the image only needs these:
+*
+!backend/
+!frontend/public/data/
+backend/db.sqlite3
+backend/staticfiles/
+backend/.env
+backend/tests/
+**/__pycache__/

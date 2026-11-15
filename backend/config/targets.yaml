@@ -1,0 +1,154 @@
+# Moon / Mars target-site profiles.
+#
+# Each feature has: value, sigma (tolerance; one sigma off = similarity 0.61), weight, and an
+# optional mode: near (default) | atleast | atmost.
+# Or, for features Earth can't match in absolute terms (temperature, hydrogen, dust, wind...):
+#   percentile: where the site ranks on its own world (0.05 = among the lowest 5%), compared with
+#   the cell's rank on Earth's land (config/earth_reference.json, `analog earth-ref build`);
+#   sigma then defaults to 1 (normal-score units). See src/analog/earthref.py.
+# `required: true` = cells without this feature get no score (used for NDVI: an analog must be
+# bare ground, and skipping a missing NDVI would let vegetated land through).
+#
+# !! STARTING VALUES ONLY. These are rough, literature-level estimates written to get the
+# pipeline running. Before presenting, replace the terrain numbers with ones measured from real
+# DEMs:   analog target from-dem <id> --dem clip.tif --body moon --base <this id>
+# (clip LOLA / MOLA / HRSC DEMs from Moon/Mars Trek), and check minerals against CRISM.
+#
+# Add your own targets as separate files in config/targets.d/*.yaml (same format).
+
+targets:
+  moon_malapert_massif:
+    name: Malapert Massif
+    body: moon
+    category: Artemis III candidate region (lunar south pole)
+    description: >-
+      Rugged highland massif near the lunar south pole. Analog needs: steep, rough, bare,
+      bright anorthositic-like ground with no hydrated minerals or vegetation.
+    reference_url: https://trek.nasa.gov/moon/
+    features:
+      slope_mean: {value: 14, sigma: 6, weight: 1.0}
+      slope_p75: {value: 19, sigma: 7, weight: 1.0}
+      gentle_slope_frac: {value: 0.55, sigma: 0.2, weight: 1.0}   # share of ground at 0-15 deg (estimate)
+      sun_elev_deg: {percentile: 0.003, weight: 0.5}   # geometry: share of the Moon's area with a lower noon sun = 1 - sin|lat| (lat ~86 S)
+      tmin_k: {percentile: 0.02, weight: 0.5}   # estimate (LRO Diviner): ~85 S is among the coldest ~2% of the Moon
+      tday_range_k: {percentile: 0.05, weight: 0.5}   # estimate (Diviner): a low sun gives small day-night swings vs. ~300 K at the equator
+      hydrogen_or_soilmoist: {percentile: 0.95, weight: 0.5}   # estimate (LRO LEND, LP neutron spectrometer): polar hydrogen enhancement
+      roughness: {value: 45, sigma: 25, weight: 1.0}
+      relief: {value: 200, sigma: 110, weight: 1.0}
+      albedo: {value: 0.25, sigma: 0.08, weight: 0.5}
+      ndvi: {value: 0.1, sigma: 0.06, weight: 1.5, mode: atmost, required: true}
+      min_phyllosilicate: {value: 0.05, sigma: 0.1, weight: 0.5, mode: atmost}
+      min_carbonate: {value: 0.05, sigma: 0.1, weight: 0.5, mode: atmost}
+      temp_range: {value: 25, sigma: 10, weight: 0.3, mode: atleast}
+
+  moon_mons_mouton_plateau:
+    name: Mons Mouton Plateau
+    body: moon
+    category: Artemis III candidate region (lunar south pole)
+    description: >-
+      Broad, relatively flat plateau top near the south pole: low slopes for landing and
+      construction, bare regolith.
+    reference_url: https://trek.nasa.gov/moon/
+    features:
+      slope_mean: {value: 5, sigma: 3, weight: 1.0}
+      slope_p75: {value: 7, sigma: 3.5, weight: 1.0}
+      gentle_slope_frac: {value: 0.95, sigma: 0.1, weight: 1.0, mode: atleast}   # share of ground at 0-15 deg (estimate)
+      sun_elev_deg: {percentile: 0.005, weight: 0.5}   # geometry: share of the Moon's area with a lower noon sun = 1 - sin|lat| (lat ~84.5 S)
+      tmin_k: {percentile: 0.02, weight: 0.5}   # estimate (LRO Diviner): ~85 S is among the coldest ~2% of the Moon
+      tday_range_k: {percentile: 0.05, weight: 0.5}   # estimate (Diviner): a low sun gives small day-night swings vs. ~300 K at the equator
+      hydrogen_or_soilmoist: {percentile: 0.95, weight: 0.5}   # estimate (LRO LEND, LP neutron spectrometer): polar hydrogen enhancement
+      roughness: {value: 10, sigma: 7, weight: 1.0}
+      relief: {value: 45, sigma: 30, weight: 1.0}
+      albedo: {value: 0.25, sigma: 0.08, weight: 0.5}
+      ndvi: {value: 0.1, sigma: 0.06, weight: 1.5, mode: atmost, required: true}
+      min_phyllosilicate: {value: 0.05, sigma: 0.1, weight: 0.5, mode: atmost}
+      min_carbonate: {value: 0.05, sigma: 0.1, weight: 0.5, mode: atmost}
+      temp_range: {value: 25, sigma: 10, weight: 0.3, mode: atleast}
+
+  mars_jezero:
+    name: Jezero Crater
+    body: mars
+    category: Perseverance landing site
+    description: >-
+      Ancient lake basin with a river delta; olivine-rich floor, clays and carbonates along
+      the delta and margin.
+    lat: 18.38
+    lon: 77.58
+    reference_url: https://trek.nasa.gov/mars/
+    features:
+      slope_mean: {value: 4, sigma: 3, weight: 1.0}
+      slope_p75: {value: 6, sigma: 3.5, weight: 0.5}
+      gentle_slope_frac: {value: 0.95, sigma: 0.1, weight: 1.0, mode: atleast}   # share of ground at 0-15 deg (estimate)
+      sun_elev_deg: {percentile: 0.68, weight: 0.5}   # geometry: share of the Mars's area with a lower noon sun = 1 - sin|lat| (lat 18.4 N)
+      roughness: {value: 8, sigma: 6, weight: 0.7}
+      relief: {value: 40, sigma: 30, weight: 0.7}
+      albedo: {value: 0.17, sigma: 0.07, weight: 0.5}
+      ndvi: {value: 0.1, sigma: 0.06, weight: 1.5, mode: atmost, required: true}
+      min_phyllosilicate: {value: 0.3, sigma: 0.2, weight: 1.2}
+      min_carbonate: {value: 0.2, sigma: 0.15, weight: 1.2}
+      min_mafic: {value: 0.4, sigma: 0.25, weight: 0.8}
+
+  mars_gale_sulfate:
+    name: Gale Crater (Mount Sharp lower layers)
+    body: mars
+    category: Curiosity field site
+    description: >-
+      Layered sedimentary mound: clay-bearing unit grading upward into sulfate-bearing
+      layers, hematite ridge, moderate slopes.
+    lat: -5.4
+    lon: 137.8
+    reference_url: https://trek.nasa.gov/mars/
+    features:
+      slope_mean: {value: 8, sigma: 4, weight: 1.0}
+      slope_p75: {value: 12, sigma: 5, weight: 0.5}
+      gentle_slope_frac: {value: 0.8, sigma: 0.15, weight: 1.0, mode: atleast}   # share of ground at 0-15 deg (estimate)
+      sun_elev_deg: {percentile: 0.91, weight: 0.5}   # geometry: share of the Mars's area with a lower noon sun = 1 - sin|lat| (lat 5.4 S)
+      roughness: {value: 20, sigma: 12, weight: 0.7}
+      relief: {value: 100, sigma: 60, weight: 0.7}
+      albedo: {value: 0.2, sigma: 0.07, weight: 0.5}
+      ndvi: {value: 0.1, sigma: 0.06, weight: 1.5, mode: atmost, required: true}
+      min_sulfate: {value: 0.35, sigma: 0.2, weight: 1.5}
+      min_phyllosilicate: {value: 0.25, sigma: 0.2, weight: 1.0}
+      min_iron_oxide: {value: 0.15, sigma: 0.15, weight: 0.5}
+
+  mars_arcadia_planitia:
+    name: Arcadia Planitia
+    body: mars
+    category: Candidate human landing region (shallow ground ice)
+    description: >-
+      Very flat, smooth mid-latitude plains with near-surface ice: ideal for landing and
+      construction. Earth analogs should be flat, smooth, cold and bare.
+    lat: 47.2
+    lon: -175.7
+    reference_url: https://trek.nasa.gov/mars/
+    features:
+      slope_mean: {value: 1.5, sigma: 1.5, weight: 1.2}
+      slope_p75: {value: 2.5, sigma: 2, weight: 1.0}
+      gentle_slope_frac: {value: 0.99, sigma: 0.05, weight: 1.0, mode: atleast}   # share of ground at 0-15 deg (estimate)
+      sun_elev_deg: {percentile: 0.27, weight: 0.5}   # geometry: share of the Mars's area with a lower noon sun = 1 - sin|lat| (lat 47.2 N)
+      roughness: {value: 3, sigma: 3, weight: 1.0}
+      relief: {value: 15, sigma: 12, weight: 1.0}
+      albedo: {value: 0.2, sigma: 0.07, weight: 0.5}
+      ndvi: {value: 0.1, sigma: 0.06, weight: 1.5, mode: atmost, required: true}
+      temp_range: {value: 25, sigma: 10, weight: 0.5, mode: atleast}
+
+  mars_meridiani:
+    name: Meridiani Planum
+    body: mars
+    category: Opportunity landing site
+    description: >-
+      Flat plains of sulfate-rich sandstone covered by hematite "blueberry" concretions.
+    lat: -1.95
+    lon: -5.53
+    reference_url: https://trek.nasa.gov/mars/
+    features:
+      slope_mean: {value: 1, sigma: 1.5, weight: 1.0}
+      slope_p75: {value: 2, sigma: 2, weight: 0.7}
+      gentle_slope_frac: {value: 0.99, sigma: 0.05, weight: 1.0, mode: atleast}   # share of ground at 0-15 deg (estimate)
+      sun_elev_deg: {percentile: 0.97, weight: 0.5}   # geometry: share of the Mars's area with a lower noon sun = 1 - sin|lat| (lat 1.95 S)
+      roughness: {value: 2, sigma: 3, weight: 0.7}
+      relief: {value: 10, sigma: 10, weight: 0.7}
+      albedo: {value: 0.17, sigma: 0.07, weight: 0.5}
+      ndvi: {value: 0.1, sigma: 0.06, weight: 1.5, mode: atmost, required: true}
+      min_iron_oxide: {value: 0.3, sigma: 0.2, weight: 1.5}
+      min_sulfate: {value: 0.3, sigma: 0.2, weight: 1.2}

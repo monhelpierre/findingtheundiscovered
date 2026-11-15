@@ -1,0 +1,67 @@
+targets:
+  mars_jezero:
+    name: Jezero Crater
+    body: mars
+    category: Perseverance landing site
+    description: Ancient lake basin with a river delta; olivine-rich floor, clays
+      and carbonates along the delta and margin.
+    lat: 18.505
+    lon: 77.418
+    reference_url: https://trek.nasa.gov/mars/
+    features:
+      slope_mean:
+        value: 4
+        sigma: 3
+        weight: 1.0
+      slope_p75:
+        value: 6
+        sigma: 3.5
+        weight: 0.5
+      gentle_slope_frac:
+        value: 0.95
+        sigma: 0.1
+        weight: 1.0
+        mode: atleast
+      sun_elev_deg:  # geometry: share of Mars's area with a lower noon sun = 1 - sin|lat| (lat 18.5 N)
+        percentile: 0.68
+        weight: 0.5
+      roughness:
+        value: 8
+        sigma: 6
+        weight: 0.7
+      relief:
+        value: 40
+        sigma: 30
+        weight: 0.7
+      albedo:
+        value: 0.17
+        sigma: 0.07
+        weight: 0.5
+      ndvi:
+        value: 0.1
+        sigma: 0.06
+        weight: 1.5
+        mode: atmost
+        required: true
+      min_phyllosilicate:
+        value: 0.1
+        sigma: 0.1
+        weight: 1.2
+      min_carbonate:
+        value: 0.021
+        sigma: 0.1
+        weight: 1.2
+      min_mafic:
+        value: 0.897
+        sigma: 0.449
+        weight: 0.8
+      min_sulfate:
+        value: 0.001
+        sigma: 0.1
+        weight: 1.0
+      min_iron_oxide:
+        value: 0.0
+        sigma: 0.1
+        weight: 1.0
+    notes: Minerals from CRISM HRL000040FF (220,978 valid pixels; share of pixels
+      above config/crism_groups.yaml thresholds)

@@ -1,0 +1,950 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Atacama Desert (Yungay)",
+    "analog_type": "mars_hyperarid",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     1,
+     6
+    ],
+    "criteria_source": "team",
+    "reference": "Hyper-arid core used for Mars life-detection tests"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -70.01,
+       -24.16
+      ],
+      [
+       -69.85,
+       -24.16
+      ],
+      [
+       -69.85,
+       -24.0
+      ],
+      [
+       -70.01,
+       -24.0
+      ],
+      [
+       -70.01,
+       -24.16
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Haughton crater",
+    "analog_type": "impact_crater",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     2,
+     3,
+     4
+    ],
+    "criteria_source": "team",
+    "reference": "Polar impact crater, Devon Island (outside SRTM)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -89.9,
+       75.3
+      ],
+      [
+       -89.4,
+       75.3
+      ],
+      [
+       -89.4,
+       75.45
+      ],
+      [
+       -89.9,
+       75.45
+      ],
+      [
+       -89.9,
+       75.3
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Death Valley (Badwater Basin)",
+    "analog_type": "mars_evaporite",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     1,
+     5
+    ],
+    "criteria_source": "team",
+    "reference": "Salt flat and evaporite basin below sea level, California; Mars evaporite and aeolian analog. Approximate box"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -116.89,
+       36.2
+      ],
+      [
+       -116.77,
+       36.2
+      ],
+      [
+       -116.77,
+       36.3
+      ],
+      [
+       -116.89,
+       36.3
+      ],
+      [
+       -116.89,
+       36.2
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "McMurdo Dry Valleys",
+    "analog_type": "polar_cold_desert",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     3,
+     4,
+     6
+    ],
+    "criteria_source": "team",
+    "reference": "Cold, dry, ice-cemented ground (outside SRTM)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       161.5,
+       -77.7
+      ],
+      [
+       162.5,
+       -77.7
+      ],
+      [
+       162.5,
+       -77.4
+      ],
+      [
+       161.5,
+       -77.4
+      ],
+      [
+       161.5,
+       -77.7
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Holuhraun lava field",
+    "analog_type": "basaltic_volcanic",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     1,
+     2
+    ],
+    "criteria_source": "team",
+    "reference": "2014-2015 basaltic lava field north of Vatnajokull, Iceland; Mars volcanic analog. Approximate box"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -16.93,
+       64.83
+      ],
+      [
+       -16.73,
+       64.83
+      ],
+      [
+       -16.73,
+       64.91
+      ],
+      [
+       -16.93,
+       64.91
+      ],
+      [
+       -16.93,
+       64.83
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Mauna Kea",
+    "analog_type": "basaltic_volcanic",
+    "analog_for": "Moon",
+    "criteria_known_for": [
+     1,
+     8
+    ],
+    "criteria_source": "team",
+    "reference": "Lunar regolith and ISRU field tests (PISCES), Hawai'i. Approximate box (covers the summit and test sites)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -155.52,
+       19.72
+      ],
+      [
+       -155.4,
+       19.72
+      ],
+      [
+       -155.4,
+       19.84
+      ],
+      [
+       -155.52,
+       19.84
+      ],
+      [
+       -155.52,
+       19.72
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Mistastin Lake crater",
+    "analog_type": "impact_crater",
+    "analog_for": "Moon",
+    "criteria_known_for": [
+     1,
+     2
+    ],
+    "criteria_source": "team",
+    "reference": "Impact crater in anorthosite (lunar-highland-like rock), Labrador; used for astronaut geology training. Labelled impact_crater (not a separate lunar type) so it can be validated against Meteor Crater"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -63.45,
+       55.8
+      ],
+      [
+       -63.15,
+       55.8
+      ],
+      [
+       -63.15,
+       55.97
+      ],
+      [
+       -63.45,
+       55.97
+      ],
+      [
+       -63.45,
+       55.8
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Meteor Crater",
+    "analog_type": "impact_crater",
+    "analog_for": "Moon",
+    "criteria_known_for": [
+     2
+    ],
+    "criteria_source": "team",
+    "reference": "Simple impact crater, Arizona"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -111.04,
+       35.01
+      ],
+      [
+       -111.0,
+       35.01
+      ],
+      [
+       -111.0,
+       35.05
+      ],
+      [
+       -111.04,
+       35.05
+      ],
+      [
+       -111.04,
+       35.01
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Mars Desert Research Station",
+    "analog_type": "mars_sedimentary",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     1,
+     8
+    ],
+    "criteria_source": "team",
+    "reference": "Mars Desert Research Station, Hanksville, Utah"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -110.87,
+       38.33
+      ],
+      [
+       -110.71,
+       38.33
+      ],
+      [
+       -110.71,
+       38.48
+      ],
+      [
+       -110.87,
+       38.48
+      ],
+      [
+       -110.87,
+       38.33
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Rio Tinto",
+    "analog_type": "mars_acid_sulfate",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     1,
+     6
+    ],
+    "criteria_source": "team",
+    "reference": "Acidic, iron- and sulfate-rich river system (Meridiani analog). Box tightened to the bare mining district around Minas de Riotinto (the earlier, larger box was ~80% forest); note this used HLS NDVI to place it."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -6.625,
+       37.665
+      ],
+      [
+       -6.55,
+       37.665
+      ],
+      [
+       -6.55,
+       37.745
+      ],
+      [
+       -6.625,
+       37.745
+      ],
+      [
+       -6.625,
+       37.665
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Bockfjorden volcanic complex",
+    "analog_type": "polar_cold_desert",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     1,
+     3
+    ],
+    "criteria_source": "team",
+    "reference": "Volcanic and carbonate Mars-analog field site (AMASE), Svalbard. Approximate box"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       13.25,
+       79.33000000000001
+      ],
+      [
+       13.45,
+       79.33000000000001
+      ],
+      [
+       13.45,
+       79.53
+      ],
+      [
+       13.25,
+       79.53
+      ],
+      [
+       13.25,
+       79.33000000000001
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Pilbara (Dresser Formation)",
+    "analog_type": "mars_sedimentary",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     6
+    ],
+    "criteria_source": "team",
+    "reference": "Early-life stromatolites, Western Australia. Approximate box"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       119.35000000000001,
+       -21.25
+      ],
+      [
+       119.51,
+       -21.25
+      ],
+      [
+       119.51,
+       -21.090000000000003
+      ],
+      [
+       119.35000000000001,
+       -21.090000000000003
+      ],
+      [
+       119.35000000000001,
+       -21.25
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Ka'u Desert",
+    "analog_type": "basaltic_volcanic",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     1,
+     2
+    ],
+    "criteria_source": "proposed",
+    "reference": "Basaltic lava and tephra, Hawai'i"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -155.4,
+       19.3
+      ],
+      [
+       -155.3,
+       19.3
+      ],
+      [
+       -155.3,
+       19.4
+      ],
+      [
+       -155.4,
+       19.4
+      ],
+      [
+       -155.4,
+       19.3
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Timanfaya (Lanzarote)",
+    "analog_type": "basaltic_volcanic",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     1,
+     2
+    ],
+    "criteria_source": "proposed",
+    "reference": "Young lava fields, Canary Islands (Spain); used for ESA planetary geology training"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -13.83,
+       28.97
+      ],
+      [
+       -13.7,
+       28.97
+      ],
+      [
+       -13.7,
+       29.06
+      ],
+      [
+       -13.83,
+       29.06
+      ],
+      [
+       -13.83,
+       28.97
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Craters of the Moon",
+    "analog_type": "basaltic_volcanic",
+    "analog_for": "Moon",
+    "criteria_known_for": [
+     1,
+     2,
+     7
+    ],
+    "criteria_source": "proposed",
+    "reference": "Basaltic lava fields and tubes, Idaho; NASA FINESSE field site. Approximate box (exclusion and documentation; outside the study regions)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -113.66,
+       43.32
+      ],
+      [
+       -113.46000000000001,
+       43.32
+      ],
+      [
+       -113.46000000000001,
+       43.52
+      ],
+      [
+       -113.66,
+       43.52
+      ],
+      [
+       -113.66,
+       43.32
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "SP Crater and Black Point lava flow",
+    "analog_type": "basaltic_volcanic",
+    "analog_for": "Moon",
+    "criteria_known_for": [
+     2,
+     8
+    ],
+    "criteria_source": "proposed",
+    "reference": "Desert RATS field tests, Arizona. Approximate box (exclusion and documentation; outside the study regions)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -111.63,
+       35.54
+      ],
+      [
+       -111.47,
+       35.54
+      ],
+      [
+       -111.47,
+       35.699999999999996
+      ],
+      [
+       -111.63,
+       35.699999999999996
+      ],
+      [
+       -111.63,
+       35.54
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Askja (Iceland highlands)",
+    "analog_type": "basaltic_volcanic",
+    "analog_for": "Moon",
+    "criteria_known_for": [
+     1,
+     2
+    ],
+    "criteria_source": "proposed",
+    "reference": "Apollo astronaut geology training, Iceland. Approximate box (exclusion and documentation; outside the study regions)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -16.85,
+       64.95
+      ],
+      [
+       -16.65,
+       64.95
+      ],
+      [
+       -16.65,
+       65.14999999999999
+      ],
+      [
+       -16.85,
+       65.14999999999999
+      ],
+      [
+       -16.85,
+       64.95
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Ries crater",
+    "analog_type": "impact_crater",
+    "analog_for": "Moon",
+    "criteria_known_for": [
+     1,
+     2
+    ],
+    "criteria_source": "proposed",
+    "reference": "Complex impact crater, Germany; Apollo 14 training. Approximate box (exclusion and documentation; outside the study regions)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       10.440000000000001,
+       48.760000000000005
+      ],
+      [
+       10.68,
+       48.760000000000005
+      ],
+      [
+       10.68,
+       49.0
+      ],
+      [
+       10.440000000000001,
+       49.0
+      ],
+      [
+       10.440000000000001,
+       48.760000000000005
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Sudbury Basin",
+    "analog_type": "impact_crater",
+    "analog_for": "Moon",
+    "criteria_known_for": [
+     1,
+     2
+    ],
+    "criteria_source": "proposed",
+    "reference": "Large impact structure, Ontario; Apollo 16/17 training. Approximate box (exclusion and documentation; outside the study regions)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -81.38000000000001,
+       46.4
+      ],
+      [
+       -80.98,
+       46.4
+      ],
+      [
+       -80.98,
+       46.800000000000004
+      ],
+      [
+       -81.38000000000001,
+       46.800000000000004
+      ],
+      [
+       -81.38000000000001,
+       46.4
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Lonar crater",
+    "analog_type": "impact_crater",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     1,
+     2
+    ],
+    "criteria_source": "proposed",
+    "reference": "Impact crater in basalt, India. Approximate box (exclusion and documentation; outside the study regions)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       76.478,
+       19.947
+      ],
+      [
+       76.538,
+       19.947
+      ],
+      [
+       76.538,
+       20.007
+      ],
+      [
+       76.478,
+       20.007
+      ],
+      [
+       76.478,
+       19.947
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Axel Heiberg (Gypsum Hill springs)",
+    "analog_type": "polar_cold_desert",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     3,
+     4,
+     6
+    ],
+    "criteria_source": "proposed",
+    "reference": "Perennial cold saline springs in permafrost, Nunavut. Approximate box (exclusion and documentation; outside the study regions)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.83,
+       79.32000000000001
+      ],
+      [
+       -90.67,
+       79.32000000000001
+      ],
+      [
+       -90.67,
+       79.48
+      ],
+      [
+       -90.83,
+       79.48
+      ],
+      [
+       -90.83,
+       79.32000000000001
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Pavilion Lake",
+    "analog_type": "mars_sedimentary",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     6,
+     8
+    ],
+    "criteria_source": "proposed",
+    "reference": "Microbialites; NASA Pavilion Lake Research Project, BC. Approximate box (exclusion and documentation; outside the study regions)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -121.78,
+       50.825
+      ],
+      [
+       -121.69999999999999,
+       50.825
+      ],
+      [
+       -121.69999999999999,
+       50.905
+      ],
+      [
+       -121.78,
+       50.905
+      ],
+      [
+       -121.78,
+       50.825
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Arkaroola",
+    "analog_type": "mars_sedimentary",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     1,
+     6
+    ],
+    "criteria_source": "proposed",
+    "reference": "Mars analog field area, South Australia. Approximate box (exclusion and documentation; outside the study regions)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       139.24,
+       -30.42
+      ],
+      [
+       139.44,
+       -30.42
+      ],
+      [
+       139.44,
+       -30.22
+      ],
+      [
+       139.24,
+       -30.22
+      ],
+      [
+       139.24,
+       -30.42
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

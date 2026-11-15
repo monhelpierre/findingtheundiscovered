@@ -1,0 +1,9 @@
+# Backend (Django API). The scoring code comes from ../src/analog (numpy + pandas only).
+Django>=5.2,<6
+djangorestframework>=3.16
+dj-database-url>=2.3
+whitenoise>=6.9
+gunicorn>=23 ; sys_platform != "win32"
+psycopg[binary]>=3.2
+numpy
+pandas

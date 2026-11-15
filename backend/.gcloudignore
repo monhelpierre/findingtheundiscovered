@@ -1,0 +1,17 @@
+# Files NOT uploaded by `gcloud builds submit ... --ignore-file backend/.gcloudignore .`
+# (run from the repo root). Critical: data/ is many GB; the build only needs backend/ and
+# frontend/public/data/.
+.git/
+.venv/
+**/__pycache__/
+**/.pytest_cache/
+data/
+docs/
+notebooks/
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+backend/db.sqlite3
+backend/staticfiles/
+backend/.env
+*.docx

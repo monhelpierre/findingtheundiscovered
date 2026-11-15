@@ -1,0 +1,10 @@
+# Same line endings (LF) on every OS, as in .editorconfig
+* text=auto eol=lf
+*.png binary
+*.tif binary
+*.pdf binary
+*.docx binary
+
+# Shell scripts run inside Linux containers: keep LF line endings even on Windows checkouts.
+*.sh text eol=lf
+Dockerfile text eol=lf

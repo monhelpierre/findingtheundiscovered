@@ -1,0 +1,27 @@
+# CRISM MTRDR "summary parameter" bands -> the shared mineral groups.
+#
+# A pixel counts as a detection of a group when ANY listed parameter exceeds its threshold.
+# The group value of a target = share of valid pixels with a detection, the same meaning as
+# EMIT on Earth (config/mineral_groups.yaml).
+#
+# !! STARTING THRESHOLDS. Parameter names follow Viviano-Beck et al. (2014, JGR Planets),
+# "Revised CRISM spectral parameters and summary products". The values were picked from the
+# typical browse-product ranges and checked on the Jezero test scene HRL000040FF. Tune them
+# if a group looks too common or too rare.
+groups:
+  mafic:            # olivine, low/high-calcium pyroxene
+    OLINDEX3: 0.10
+    LCPINDEX2: 0.02
+    HCPINDEX2: 0.02
+  phyllosilicate:   # Fe/Mg smectite (2.3 um), Al clays (2.2 um)
+    D2300: 0.015
+    BD2290: 0.01
+    MIN2200: 0.01
+  sulfate:          # mono/polyhydrated sulfates
+    SINDEX2: 0.01
+    BD2100_2: 0.02
+  carbonate:
+    MIN2345_2537: 0.005
+  iron_oxide:       # crystalline hematite; BD530_2 is skipped because Martian dust raises it everywhere
+    BD860_2: 0.02
+    BD920_2: 0.02

@@ -1,0 +1,41 @@
+# Python
+.venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+
+# Data: downloads and generated outputs (regenerate with the CLI)
+data/regions/
+data/export/
+data/maps/
+data/models/
+data/labels/demo_labels.geojson
+data/inbox/
+data/downloads/
+data/logs/
+data/earth_reference/
+
+# Docs drafts
+docs/
+notebooks/
+
+# Backend (local)
+backend/db.sqlite3
+backend/staticfiles/
+backend/.env
+.env
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/.next-build/
+frontend/out/
+frontend/next-env.d.ts
+frontend/tsconfig.tsbuildinfo
+frontend/.firebase/
+
+# Earthdata / OPeNDAP client settings (machine-specific paths)
+.dodsrc
+
+# Secrets (never commit)
+meteomatics/

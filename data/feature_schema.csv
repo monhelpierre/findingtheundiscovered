@@ -1,0 +1,32 @@
+column,criterion,unit,meaning
+site_id,id,,unique id of a grid square or target
+body,id,,Earth or Moon or Mars
+kind,id,,grid_square or target or calibration or known_analog
+x,id,m,easting in EPSG:6933 (Earth grid squares only)
+y,id,m,northing in EPSG:6933 (Earth grid squares only)
+lon,id,degrees east,centre longitude
+lat,id,degrees north,centre latitude
+continent,id,,Earth only
+lith_class,1,category,basaltic or anorthositic or evaporite or clay or other
+albedo,1,0 to 1,surface reflectance
+iron_proxy,1,percentile,iron oxide index; relative
+slope_deg,2,degrees,median slope
+roughness_tri,2,m,terrain ruggedness index
+relief_m,2,m,highest minus lowest elevation in the square or zone
+impact_flag,2,0 or 1,impact structure present
+tmin_k,3,K,lowest surface temperature; relative
+tday_range_k,3,K,mean daily temperature range; relative
+tyear_range_k,3,K,yearly temperature range; relative
+sun_elev_deg,3,degrees,mean noon sun elevation; relative
+ice_flag,4,0 or 1,ice or permafrost or cold trap present
+hydrogen_or_soilmoist,4,percentile,hydrogen (Moon and Mars) or soil moisture (Earth); relative
+hydrated_flag,4,0 or 1,hydrated minerals present
+dust_aod,5,unitless,dust optical depth; relative
+wind_ms,5,m/s,mean wind speed; relative
+aeolian_flag,5,0 or 1,dunes or yardangs present
+aridity_index,6,ratio,precipitation over potential evaporation (Earth; dossier only)
+ndvi,6,-1 to 1,vegetation index (Earth; dossier only)
+subsurface_flag,7,0 or 1,caves or lava tubes or pits nearby
+gentle_slope_frac,8,0 to 1,share of land area with slope from 0 to 15 degrees (water and ocean excluded)
+rock_abundance,8,0 to 1,share of surface covered by rocks
+access_hours,8,hours,travel time to nearest city (Earth only)
