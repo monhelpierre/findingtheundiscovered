@@ -278,6 +278,7 @@ targets:
     name: Human-readable name
     body: moon | mars | earth
     category: free text           # shown in the app
+    mission: habitat | landing    # groups targets in the app: a human base, or a landing site
     description: free text
     features:
       slope_mean: {value: 14, sigma: 6, weight: 1.0}                       # mode "near" (default)
@@ -290,6 +291,7 @@ What each field does:
 - **`value`, `sigma`:** the target value and its tolerance. One sigma off scores 0.61 for that feature, two sigma 0.14.
 - **`weight`:** how much the feature counts.
 - **`mode`:** `near`, `atleast` (anything above is perfect) or `atmost` (anything below is perfect).
+- **`mission`** (target level, optional): `habitat` (where a crew could live) or `landing` (where a spacecraft could land). The app groups targets by it; targets without one are grouped by body.
 - **`required: true`:** cells without the feature get no score. NDVI is required everywhere, so vegetated land can't pass as lunar.
 - **`criterion: N`:** moves a feature to another of the 8 criteria.
 - **`percentile` (instead of `value`):** for features Earth can't match in absolute terms (temperature, hydrogen, dust, wind). Where the site ranks **on its own world**, 0–1: `tmin_k: {percentile: 0.02}` = "among the coldest 2% of the Moon". A cell is compared by its rank **on Earth's land**; `sigma` (default 1) is in normal-score units, so the 2nd vs. the 16th percentile scores 0.61. `mode` works as usual (`atmost`: as cold or colder). Needs the Earth reference (below).
@@ -433,7 +435,7 @@ The newest 100 log files are kept. `data/logs/` is git-ignored. Set `ANALOG_LOG_
 [`backend/`]() holds a small **Django 5 + Django REST Framework** API next to the pipeline. The web app works without it. With it, you also get:
 
 - **Weight sliders** in the app: the backend re-scores a region with your weights, using the pipeline's own `similarity.py` and `criteria.py` (identical results at default weights; a test checks it).
-- **Team notes** on any cell, protected by a shared team token.
+- **Team notes** on any cell, with an optional verdict (good analog / not an analog / unsure), protected by a shared team token. Field reviews (data matches / wrong per criterion, reliability 1–5) need no backend: see [frontend/README.md](../frontend/README.md).
 - **Django admin** to edit targets and known analogs in the browser instead of YAML.
 
 Everything is served under `/api/` (API, admin, static files), so in production one rewrite connects it to the site.
@@ -459,7 +461,8 @@ Locally it uses SQLite (`backend/db.sqlite3`), reads `data/export/`, and the tea
 | `GET /api/regions/<id>` | `regions/<id>.json` |
 | `GET /api/score?target=ID&region=ID&w.<feature>=<weight>` | One region re-scored for one target with custom weights (0–10; 0 ignores a feature): scores, criteria, tiers and candidates |
 | `GET /api/notes?region=ID&cell=N` | Team notes, newest first |
-| `POST /api/notes` | Adds a note: JSON `{region, cell, lat, lon, author, text, target_id}`, header `X-Team-Token` |
+| `POST /api/notes` | Adds a note: JSON `{region, cell, lat, lon, author, verdict, text, target_id}`, header `X-Team-Token`. `verdict` is `good`, `bad`, `unsure` or empty; a note needs a verdict or a text |
+| `GET /api/notes/summary` | Verdict counts per cell: `{"<region>:<cell>": {"good": n, "bad": n, "unsure": n}}` |
 | `/api/admin/` | Django admin |
 
 ### 3.3 Admin
@@ -468,9 +471,9 @@ Locally it uses SQLite (`backend/db.sqlite3`), reads `data/export/`, and the tea
 
 | Table | What editing it does |
 |---|---|
-| **Targets** | Feature profiles as JSON (same format as the YAML in 3.5, validated on save). Edits show up in `/api/index` and are used by `/api/score`. The CLI's `analog export` still uses the YAML files. |
+| **Targets** | Mission (habitat / landing) and feature profiles as JSON (same format as the YAML in 3.5, validated on save). Edits show up in `/api/index` and are used by `/api/score`. The CLI's `analog export` still uses the YAML files. |
 | **Known analogs** | Bounding boxes used for the 50 km exclusion in `/api/score` |
-| **Candidate notes** | The team's notes |
+| **Candidate notes** | The team's notes and verdicts |
 
 ### 3.4 How it's built
 
@@ -498,7 +501,7 @@ Both run on every push in GitHub Actions ([.github/workflows/ci.yml](../.github/
 | Suite | Covers |
 |---|---|
 | [`tests/test_pipeline.py`](tests/test_pipeline.py) | Runs in a temporary project. Similarity maths; the full demo pipeline with the classifier; custom-feature ingest and `target from-dem`; file-name detection; importing a GeoTIFF and a planetary DEM; Earth Engine imports (both band versions); Meteomatics statistics from cached responses; training with excluded features |
-| [`tests/test_api.py`](tests/test_api.py) | A small fixture export: health; index (export vs. database); region IDs (including path tricks); scores with tiers, NDVI gate and 50 km exclusion; custom weights; bad requests; notes needing the team token. Also: `/api/score` at default weights reproduces the real export |
+| [`tests/test_api.py`](tests/test_api.py) | A small fixture export: health; index (export vs. database); region IDs (including path tricks); scores with tiers, NDVI gate and 50 km exclusion; custom weights; bad requests; notes needing the team token; verdicts and their summary. Also: `/api/score` at default weights reproduces the real export |
 | [`tests/test_labels.py`](tests/test_labels.py) | `data/known_analogs.csv` and `data/labels/known_analogs.geojson` list the same sites with the same fields |
 
 ## 5. Configuration and environment variables

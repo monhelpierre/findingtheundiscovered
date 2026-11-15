@@ -7,11 +7,15 @@ export type FeatureSpec = {
   percentile?: number; column?: string;
 };
 
+export type Mission = "habitat" | "landing";
+
 export type Target = {
   id: string;
   name: string;
   body: "moon" | "mars" | "earth";
   category?: string;
+  /** What the site is for: a human base ("habitat") or a landing site ("landing"). Groups the target list. */
+  mission?: Mission | null;
   description?: string;
   lat?: number | null;
   lon?: number | null;

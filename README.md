@@ -7,7 +7,7 @@ Built for the **NASA Space Apps Challenge 2026**, challenge *"Identify Earth Loc
 | Part | What it is | Read |
 |---|---|---|
 | **Backend** | The `analog` pipeline (data, features, scoring, classifier, export) and an optional Django API | [backend/README.md](backend/README.md) |
-| **Frontend** | The web app: map, candidates, criteria radar, validation | [frontend/README.md](frontend/README.md) |
+| **Frontend** | The web app: map in five colour-blind-safe score classes, targets by mission (habitat / landing), one criterion at a time, candidates, criteria radar, field reviews, validation | [frontend/README.md](frontend/README.md) |
 
 ## Contents
 

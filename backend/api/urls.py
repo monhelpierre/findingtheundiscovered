@@ -8,4 +8,5 @@ urlpatterns = [
     path("regions/<str:region_id>", views.region),
     path("score", views.score),
     path("notes", views.notes),
+    path("notes/summary", views.notes_summary),
 ]

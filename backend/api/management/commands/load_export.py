@@ -24,6 +24,7 @@ class Command(BaseCommand):
         n_t = n_a = 0
         for order, t in enumerate(idx.get("targets", [])):
             fields = {"name": t["name"], "body": t["body"], "category": t.get("category") or "",
+                      "mission": t.get("mission") or "",
                       "description": t.get("description") or "", "reference_url": t.get("reference_url") or "",
                       "notes": t.get("notes") or "", "lat": t.get("lat"), "lon": t.get("lon"),
                       "features": t["features"], "source_file": t.get("source_file") or "", "order": order}

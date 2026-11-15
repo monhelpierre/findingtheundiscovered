@@ -7,7 +7,7 @@ from .models import CandidateNote
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = CandidateNote
-        fields = ["id", "target_id", "region", "cell", "lat", "lon", "author", "text", "created_at"]
+        fields = ["id", "target_id", "region", "cell", "lat", "lon", "author", "verdict", "text", "created_at"]
         read_only_fields = ["id", "created_at"]
 
     def validate_region(self, value):
@@ -22,7 +22,9 @@ class NoteSerializer(serializers.ModelSerializer):
         return value
 
     def validate_text(self, value):
-        value = value.strip()
-        if not value:
-            raise serializers.ValidationError("text is required")
-        return value
+        return value.strip()
+
+    def validate(self, attrs):
+        if not attrs.get("text") and not attrs.get("verdict"):
+            raise serializers.ValidationError({"text": "give a verdict or a note"})
+        return attrs

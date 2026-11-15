@@ -158,7 +158,7 @@ def export(rescore: bool = True) -> dict:
     index = {
         "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "targets": [
-            {k: t.get(k) for k in ("id", "name", "body", "category", "description", "lat", "lon",
+            {k: t.get(k) for k in ("id", "name", "body", "category", "mission", "description", "lat", "lon",
                                    "reference_url", "notes", "features", "source_file")}
             for t in targets.values()
         ],
