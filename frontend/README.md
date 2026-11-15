@@ -12,6 +12,7 @@ It needs only the JSON written by the pipeline (`analog export`, see [backend/RE
 4. [Configuration](#4-configuration)
 5. [Deployment](#5-deployment)
 6. [Troubleshooting](#6-troubleshooting)
+7. [Future work](#7-future-work)
 
 ---
 
@@ -141,3 +142,27 @@ What the site shows is `public/data/`. To publish new results: `analog export` (
 | Footer says "static copy" though the backend runs | The backend wasn't up when `npm run dev` started: restart `npm run dev` (or set `BACKEND_URL`) |
 | `EADDRINUSE` when starting the app | An old server holds the port: stop it or use `npm run dev -- --port 3001` |
 | Hydration warning with attributes like `bis_skin_checked` | A browser extension rewrote the page; try a private window |
+
+## 7. Future work
+
+### 7.1 A dynamic app backed by the API
+
+Today the app is static: all results are JSON files copied into `public/data/` at build time, and new results need a redeploy. Next step: an app that asks the API for everything (see [backend/README.md](../backend/README.md#8-future-work)).
+
+- **Load data on request:** fetch cells for the visible map area, target and criterion instead of whole region files. That allows many more regions, worldwide tiles and finer cells without a heavier site.
+- **Save reviews on the server:** send field reviews to the API instead of keeping them in the browser and sharing a downloaded file. Everyone then sees new reviews and confidence indicators immediately.
+- **Ranking over all regions:** "Where to test" across every region and world tile, computed by the API, not only the open region.
+- **Live updates** after a new export or retraining, without rebuilding the site.
+
+### 7.2 Field work
+
+- **Photos and GPS points** attached to a review, and an observed value next to the satellite one (for example "slope on site: 8°" next to "slope from the DEM: 14°").
+- **Offline use on site:** a phone-friendly mode (PWA) that caches the chosen region and syncs reviews when back online.
+- **Export a field plan:** the selected candidates as GPX/KML with their criteria, to load in a GPS or a mapping app.
+
+### 7.3 Exploring the results
+
+- **Compare two targets or two criteria** side by side, or as a combined map.
+- **Uncertainty on the map:** show how sure each score is (data coverage, model uncertainty, review confidence), not only the score.
+- **An official imagery provider** with an API key (for example MapTiler or Mapbox) for a public deployment, instead of the unofficial Google and Bing tiles.
+- **French and English** interface.

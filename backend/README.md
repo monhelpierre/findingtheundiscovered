@@ -16,6 +16,7 @@ The goal, method, formulas and results are in the [project README](../README.md)
 5. [Configuration and environment variables](#5-configuration-and-environment-variables)
 6. [Troubleshooting](#6-troubleshooting)
 7. [Deployment](#7-deployment)
+8. [Future work](#8-future-work)
 
 ---
 
@@ -567,3 +568,29 @@ docker run --rm -p 8080:8080 -e DJANGO_SECRET_KEY=local-test -e DJANGO_ALLOWED_H
 ```
 
 New results reach the deployed API only by rebuilding the image (the exported data is baked in).
+
+## 8. Future work
+
+### 8.1 An always-on API for the app
+
+Today the web app runs as a static site and the API is optional. Next step: deploy the API permanently (Cloud Run is already set up in section 7) so the app can rely on it.
+
+- **Serve every result on request:** regions, cells and candidates queried by bounding box, target and criterion, instead of whole JSON files baked into the site. The app then loads only what is on screen.
+- **Store field reviews:** move the browser-only reviews into the database (a `Review` table next to `CandidateNote`). Add endpoints to post a review, list the reviews of a cell, and return a confidence summary per site.
+- **Per-criterion ranking on the server:** "where to test slope" over all regions and world tiles, not only the region open in the browser.
+- **Accounts or invitations** instead of one shared team token, so outside visitors can review a site without spam.
+- **A persistent database:** PostgreSQL (Cloud SQL) instead of SQLite in the image, so reviews and notes survive redeploys. Read the exported data from a bucket instead of baking it into the image.
+
+### 8.2 More and better data
+
+- **Worldwide coverage at higher resolution:** run the Earth Engine screen over every continent, then refine the best tiles at ~1 km with the full pipeline.
+- **Fill the gaps:** mineral layers (EMIT, ASTER) where coverage is thin (Mistastin, Kau Desert, Lanzarote). Add measured Moon/Mars target values (terrain from LOLA, HRSC and MOLA DEMs, CRISM minerals for every Mars target, thermal values from Diviner and TES) instead of estimates.
+- **Neighbourhood features** (3–10 km terrain context) so craters and other large landforms are recognised.
+- **Data for criteria 6 and 7** (biology, subsurface), which have no measure yet.
+
+### 8.3 A better model
+
+- **Learn from field reviews:** use cells that reviewers confirmed or rejected as extra positive and negative labels. Down-weight features that reviewers often find wrong. That closes the loop between satellite measures and ground truth.
+- **Stronger classifiers:** gradient boosting and spatial cross-validation (leave one region out), with calibrated probabilities. Add uncertainty per cell so the app can show how sure each score is.
+- **Learned target weights:** fit each target's feature weights on the known analogs instead of setting them by hand.
+- **Automatic retraining and export** when new data or reviews arrive (a scheduled job), with the validation metrics tracked over time.

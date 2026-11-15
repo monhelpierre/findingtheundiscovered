@@ -3,7 +3,7 @@ then hand the files to process.py, the same code `analog import` uses for local 
 
 from __future__ import annotations
 
-from pathlib import Path_
+from pathlib import Path
 
 from . import process
 from .region import Region
@@ -11,7 +11,7 @@ from .region import Region
 
 def login():
     import earthaccess
-_
+
     auth = earthaccess.login()  # uses ~/.netrc, env vars, or prompts
     if not getattr(auth, "authenticated", False):
         raise SystemExit("Earthdata login failed. Register at https://urs.earthdata.nasa.gov/users/new")
