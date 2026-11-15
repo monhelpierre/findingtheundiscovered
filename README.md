@@ -11,16 +11,25 @@ Built for the **NASA Space Apps Challenge 2026**, challenge *"Identify Earth Loc
 
 ## Contents
 
-1. [Goal](#1-goal)
-2. [How it works](#2-how-it-works)
-3. [Data](#3-data)
-4. [Method and formulas](#4-method-and-formulas)
-5. [Metrics and current results](#5-metrics-and-current-results)
-6. [Quick start](#6-quick-start)
-7. [Repository](#7-repository)
-8. [Limitations and next steps](#8-limitations-and-next-steps)
-9. [Use of AI](#9-use-of-ai)
-10. [Team and license](#10-team-and-license)
+- [Earth Analog Explorer](#earth-analog-explorer)
+  - [Contents](#contents)
+  - [1. Goal](#1-goal)
+  - [2. How it works](#2-how-it-works)
+  - [3. Data](#3-data)
+  - [4. Method and formulas](#4-method-and-formulas)
+    - [4.1 Features](#41-features)
+    - [4.2 Model A: similarity to a target](#42-model-a-similarity-to-a-target)
+    - [4.3 Criteria and tiers](#43-criteria-and-tiers)
+    - [4.4 Candidates](#44-candidates)
+    - [4.5 Model B: positive-unlabeled classifier](#45-model-b-positive-unlabeled-classifier)
+  - [5. Metrics and current results](#5-metrics-and-current-results)
+    - [5.1 Validation: does the method find sites it has never seen?](#51-validation-does-the-method-find-sites-it-has-never-seen)
+    - [5.2 Candidates (similarity index)](#52-candidates-similarity-index)
+  - [6. Quick start](#6-quick-start)
+  - [7. Repository](#7-repository)
+  - [8. Limitations and next steps](#8-limitations-and-next-steps)
+  - [9. Use of AI](#9-use-of-ai)
+  - [10. Team and license](#10-team-and-license)
 
 ---
 
@@ -254,6 +263,6 @@ No AI-generated images, data or results: every number in this README comes from 
 
 ## 10. Team and license
 
-Team (NASA Space Apps Challenge 2026, Sherbrooke local event): Guilhem, Eli, Meriem, Monhel, Leea, Florian.
+Team (NASA Space Apps Challenge 2026, Sherbrooke local event): Guilhem, Eli, Meriem, Monhel, Leea.
 
 **License:** MIT ([LICENSE](LICENSE)). Data credits: NASA LP DAAC (SRTM, HLS, EMIT), NASA JPL / PDS (CRISM, LOLA, MOLA), ESA, Meteomatics, and the Google Earth Engine catalog datasets (NASADEM, MODIS, JRC Global Surface Water).

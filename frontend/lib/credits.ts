@@ -10,8 +10,7 @@ export const CREDITS = {
     { name: "Eli", url: "https://www.linkedin.com/in/eli-djomekou-7a49bb123/" },
     { name: "Meriem", url: "https://www.linkedin.com/in/meriem-sarra-tairi/" },
     { name: "Monhel", url: "https://www.linkedin.com/in/monhelmaudoonypierre/" },
-    { name: "Leea" },
-    { name: "Florian" },
+    { name: "Leea", url: "https://www.linkedin.com/in/leearebecaruta?utm_source=share_via&utm_content=profile&utm_medium=member_android"}
   ] as { name: string; url?: string }[],
   event: "NASA Space Apps Challenge 2026",
   location: "Sherbrooke",
