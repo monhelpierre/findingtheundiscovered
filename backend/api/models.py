@@ -33,6 +33,10 @@ def validate_features(value):
             raise ValidationError(f"{name}: mode must be one of {sorted(MODES)}")
 
 
+MISSIONS = [("habitat", "Habitat (human base)"), ("landing", "Landing site")]
+VERDICTS = [("good", "Good analog"), ("bad", "Not an analog"), ("unsure", "Unsure")]
+
+
 class Target(models.Model):
     """A Moon or Mars target profile. Loaded from the export (`manage.py load_export`); edits here
     override the exported profile in /api/index and are used by /api/score."""
@@ -43,6 +47,8 @@ class Target(models.Model):
     name = models.CharField(max_length=200)
     body = models.CharField(max_length=10, choices=BODIES)
     category = models.CharField(max_length=200, blank=True)
+    mission = models.CharField(max_length=20, choices=MISSIONS, blank=True,
+                               help_text="Groups targets in the app: habitat (human base) or landing (landing site)")
     description = models.TextField(blank=True)
     reference_url = models.URLField(blank=True)
     notes = models.TextField(blank=True)
@@ -62,6 +68,7 @@ class Target(models.Model):
 
     def as_dict(self) -> dict:
         return {"id": self.target_id, "name": self.name, "body": self.body, "category": self.category,
+                "mission": self.mission or None,
                 "description": self.description, "lat": self.lat, "lon": self.lon,
                 "reference_url": self.reference_url, "notes": self.notes, "features": self.features,
                 "source_file": self.source_file or "admin"}
@@ -107,7 +114,9 @@ class CandidateNote(models.Model):
     lat = models.FloatField()
     lon = models.FloatField()
     author = models.CharField(max_length=80)
-    text = models.TextField(max_length=2000)
+    verdict = models.CharField(max_length=10, choices=VERDICTS, blank=True,
+                               help_text="The reviewer's call on the result: good, bad or unsure")
+    text = models.TextField(max_length=2000, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

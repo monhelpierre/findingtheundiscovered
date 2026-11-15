@@ -3,18 +3,41 @@
 import maplibregl, { type GeoJSONSource, type Map as MLMap } from "maplibre-gl";
 import { useEffect, useRef, useState } from "react";
 import type { Candidate, RegionData } from "@/lib/types";
+import { CLASSES, type ScoreClass } from "@/lib/classes";
 
-// Sequential one-hue ramp (light -> dark = low -> high).
-export const RAMP: [number, string][] = [
-  [0, "#cde2fb"],
-  [0.25, "#9ec5f4"],
-  [0.5, "#5598e7"],
-  [0.75, "#256abf"],
-  [1, "#0d366b"],
-];
+// Satellite basemaps. Esri has "Map data not yet available" gaps at close zoom
+// in many regions, so the user can switch to Google or Bing imagery there.
+const BASEMAPS = {
+  google: {
+    label: "Google",
+    tiles: [0, 1, 2, 3].map((n) => `https://mt${n}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}`),
+    maxzoom: 20,
+    attribution: "Imagery © Google",
+  },
+  bing: {
+    label: "Bing",
+    tiles: [0, 1, 2, 3].map((n) => `https://ecn.t${n}.tiles.virtualearth.net/tiles/a{quadkey}.jpeg?g=1`),
+    maxzoom: 19,
+    attribution: "Imagery © Microsoft",
+  },
+  esri: {
+    label: "Esri",
+    tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+    maxzoom: 18,
+    attribution: "Imagery © Esri, Maxar, Earthstar Geographics",
+  },
+} as const;
+type BasemapId = keyof typeof BASEMAPS;
+const BASEMAP_IDS = Object.keys(BASEMAPS) as BasemapId[];
+const BASEMAP_KEY = "basemap";
 
-const IMAGERY =
-  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+function initialBasemap(): BasemapId {
+  try {
+    const v = localStorage.getItem(BASEMAP_KEY);
+    if (v && v in BASEMAPS) return v as BasemapId;
+  } catch {}
+  return "google";
+}
 
 type Props = {
   region: RegionData | null;
@@ -22,10 +45,17 @@ type Props = {
   selected: number | null;
   onSelect: (i: number | null) => void;
   onHover: (h: { i: number; x: number; y: number } | null) => void;
-  candidates: Candidate[];
+  /** Candidates in this region, with their rank in the full list (the number shown). */
+  candidates: (Candidate & { rank: number })[];
   onCandidate: (c: Candidate) => void;
   focus: { lon: number; lat: number; key: number } | null;
+  /** Changes when the user picks another site or criterion: zoom out to the new candidates. */
+  refit?: number;
   opacity: number;
+  /** Cells scoring below this are hidden (still clickable). */
+  minScore: number;
+  /** Score classes (colour steps); defaults to the standard five. */
+  classes?: ScoreClass[];
   /** Called once the base map has loaded (the app hides its loading overlay). */
   onReady?: () => void;
 };
@@ -48,6 +78,8 @@ export default function MapView(p: Props) {
   cb.current = p;
   const lastRegion = useRef<string | null>(null);
   const markers = useRef<maplibregl.Marker[]>([]);
+  const [basemap, setBasemap] = useState<BasemapId>(initialBasemap);
+  const basemapRef = useRef(basemap);
 
   useEffect(() => {
     if (!el.current) return;
@@ -55,13 +87,14 @@ export default function MapView(p: Props) {
       container: el.current,
       style: {
         version: 8,
-        sources: {
-          imagery: {
-            type: "raster", tiles: [IMAGERY], tileSize: 256, maxzoom: 18,
-            attribution: "Imagery © Esri, Maxar, Earthstar Geographics",
-          },
-        },
-        layers: [{ id: "imagery", type: "raster", source: "imagery" }],
+        sources: Object.fromEntries(BASEMAP_IDS.map((id) => [id, {
+          type: "raster" as const, tiles: [...BASEMAPS[id].tiles], tileSize: 256,
+          maxzoom: BASEMAPS[id].maxzoom, attribution: BASEMAPS[id].attribution,
+        }])),
+        layers: BASEMAP_IDS.map((id) => ({
+          id: `basemap-${id}`, type: "raster" as const, source: id,
+          layout: { visibility: id === basemapRef.current ? "visible" as const : "none" as const },
+        })),
       },
       center: [0, 15],
       zoom: 1.4,
@@ -115,6 +148,17 @@ export default function MapView(p: Props) {
     };
   }, []);
 
+  // Switch the visible basemap (hidden raster layers fetch no tiles).
+  useEffect(() => {
+    basemapRef.current = basemap;
+    try { localStorage.setItem(BASEMAP_KEY, basemap); } catch {}
+    const m = map.current;
+    if (!ready || !m) return;
+    for (const id of BASEMAP_IDS) {
+      m.setLayoutProperty(`basemap-${id}`, "visibility", id === basemap ? "visible" : "none");
+    }
+  }, [ready, basemap]);
+
   // Rebuild cell polygons when the region or the coloured column changes.
   useEffect(() => {
     const m = map.current;
@@ -150,14 +194,16 @@ export default function MapView(p: Props) {
     const m = map.current;
     if (!ready || !m) return;
     const v = ["get", "v"];
+    const cls = p.classes ?? CLASSES;
+    // One flat colour per class (no gradient); the lowest class is lighter so the imagery shows through.
     m.setPaintProperty("cells", "fill-color", [
-      "interpolate", ["linear"], v, ...RAMP.flat(),
+      "step", v, cls[0].color, ...cls.slice(1).flatMap((c) => [c.min, c.color]),
     ] as unknown as maplibregl.ExpressionSpecification);
     m.setPaintProperty("cells", "fill-opacity", [
-      "case", ["<", v, 0], 0,
-      ["*", p.opacity, ["interpolate", ["linear"], v, 0, 0, 0.15, 0.08, 0.4, 0.4, 1, 0.9]],
+      "case", ["<", v, Math.max(0, p.minScore)], 0,
+      ["*", p.opacity, ["step", v, 0.3, cls[1].min, 0.8]],
     ] as unknown as maplibregl.ExpressionSpecification);
-  }, [ready, p.opacity]);
+  }, [ready, p.opacity, p.minScore, p.classes]);
 
   useEffect(() => {
     const m = map.current;
@@ -183,8 +229,8 @@ export default function MapView(p: Props) {
     markers.current = p.candidates.map((c, k) => {
       const d = document.createElement("button");
       d.className = "cand-marker";
-      d.textContent = String(k + 1);
-      d.title = `Candidate ${k + 1}: score ${c.score.toFixed(2)}`;
+      d.textContent = String(c.rank);
+      d.title = `Candidate ${c.rank}: score ${c.score.toFixed(2)}`;
       d.onclick = (ev) => {
         ev.stopPropagation();
         cb.current.onCandidate(c);
@@ -193,11 +239,47 @@ export default function MapView(p: Props) {
     });
   }, [ready, p.candidates]);
 
+  // New site or criterion: show its candidates (or the whole region if none is here).
+  const refitDone = useRef(p.refit);
+  useEffect(() => {
+    const m = map.current;
+    if (!ready || !m || !p.region || p.refit === refitDone.current) return;
+    refitDone.current = p.refit;
+    const pts = p.candidates.map((c) => [c.lon, c.lat]);
+    if (pts.length) {
+      const pad = p.region.cell_deg * 3;
+      const xs = pts.map((q) => q[0]), ys = pts.map((q) => q[1]);
+      m.fitBounds([[Math.min(...xs) - pad, Math.min(...ys) - pad], [Math.max(...xs) + pad, Math.max(...ys) + pad]],
+        { padding: 60, duration: 900, maxZoom: 11 });
+    } else {
+      const [w, s, e, n] = p.region.bbox;
+      m.fitBounds([[w, s], [e, n]], { padding: 48, duration: 900 });
+    }
+  }, [ready, p.refit, p.candidates, p.region]);
+
   useEffect(() => {
     const m = map.current;
     if (!ready || !m || !p.focus) return;
     m.flyTo({ center: [p.focus.lon, p.focus.lat], zoom: Math.max(m.getZoom(), 11), duration: 900 });
   }, [ready, p.focus]);
 
-  return <div ref={el} className="map" />;
+  return (
+    <>
+      <div ref={el} className="map" />
+      <div className="basemap-switch" role="radiogroup" aria-label="Basemap">
+        {BASEMAP_IDS.map((id) => (
+          <button
+            key={id}
+            type="button"
+            role="radio"
+            aria-checked={basemap === id}
+            className={basemap === id ? "on" : ""}
+            onClick={() => setBasemap(id)}
+          >
+            {BASEMAPS[id].label}
+          </button>
+        ))}
+      </div>
+    </>
+  );
 }

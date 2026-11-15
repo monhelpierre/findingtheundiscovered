@@ -21,6 +21,7 @@ targets:
     name: Malapert Massif
     body: moon
     category: Artemis III candidate region (lunar south pole)
+    mission: habitat   # habitat (human base) or landing (landing site): groups targets in the app
     description: >-
       Rugged highland massif near the lunar south pole. Analog needs: steep, rough, bare,
       bright anorthositic-like ground with no hydrated minerals or vegetation.
@@ -45,6 +46,7 @@ targets:
     name: Mons Mouton Plateau
     body: moon
     category: Artemis III candidate region (lunar south pole)
+    mission: habitat
     description: >-
       Broad, relatively flat plateau top near the south pole: low slopes for landing and
       construction, bare regolith.
@@ -69,6 +71,7 @@ targets:
     name: Jezero Crater
     body: mars
     category: Perseverance landing site
+    mission: landing
     description: >-
       Ancient lake basin with a river delta; olivine-rich floor, clays and carbonates along
       the delta and margin.
@@ -92,6 +95,7 @@ targets:
     name: Gale Crater (Mount Sharp lower layers)
     body: mars
     category: Curiosity field site
+    mission: landing
     description: >-
       Layered sedimentary mound: clay-bearing unit grading upward into sulfate-bearing
       layers, hematite ridge, moderate slopes.
@@ -115,6 +119,7 @@ targets:
     name: Arcadia Planitia
     body: mars
     category: Candidate human landing region (shallow ground ice)
+    mission: habitat
     description: >-
       Very flat, smooth mid-latitude plains with near-surface ice: ideal for landing and
       construction. Earth analogs should be flat, smooth, cold and bare.
@@ -136,6 +141,7 @@ targets:
     name: Meridiani Planum
     body: mars
     category: Opportunity landing site
+    mission: landing
     description: >-
       Flat plains of sulfate-rich sandstone covered by hematite "blueberry" concretions.
     lat: -1.95

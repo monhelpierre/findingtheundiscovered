@@ -5,13 +5,13 @@ from .models import CandidateNote, KnownAnalog, Target
 
 @admin.register(Target)
 class TargetAdmin(admin.ModelAdmin):
-    list_display = ("name", "target_id", "body", "category", "active", "updated_at")
-    list_filter = ("body", "active")
+    list_display = ("name", "target_id", "body", "mission", "category", "active", "updated_at")
+    list_filter = ("body", "mission", "active")
     search_fields = ("name", "target_id", "description")
     list_editable = ("active",)
     readonly_fields = ("updated_at",)
     fieldsets = (
-        (None, {"fields": ("target_id", "name", "body", "category", "active", "order")}),
+        (None, {"fields": ("target_id", "name", "body", "mission", "category", "active", "order")}),
         ("Description", {"fields": ("description", "notes", "reference_url", "lat", "lon", "source_file")}),
         ("Feature profile", {
             "fields": ("features",),
@@ -32,6 +32,6 @@ class KnownAnalogAdmin(admin.ModelAdmin):
 
 @admin.register(CandidateNote)
 class CandidateNoteAdmin(admin.ModelAdmin):
-    list_display = ("created_at", "author", "region", "cell", "target_id", "text")
-    list_filter = ("region", "target_id")
+    list_display = ("created_at", "author", "region", "cell", "target_id", "verdict", "text")
+    list_filter = ("verdict", "region", "target_id")
     search_fields = ("author", "text")

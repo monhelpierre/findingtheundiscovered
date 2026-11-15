@@ -3,6 +3,7 @@ targets:
     name: Jezero Crater
     body: mars
     category: Perseverance landing site
+    mission: landing
     description: Ancient lake basin with a river delta; olivine-rich floor, clays
       and carbonates along the delta and margin.
     lat: 18.505

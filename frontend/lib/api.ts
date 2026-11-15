@@ -38,10 +38,19 @@ export function scoreRegion(target: string, region: string, weights: Record<stri
   return json<ScoreResult>(`/api/score?${q}`, { signal });
 }
 
+export type Verdict = "good" | "bad" | "unsure";
+
 export type Note = {
   id: number; target_id: string; region: string; cell: number; lat: number; lon: number;
-  author: string; text: string; created_at: string;
+  author: string; verdict?: Verdict | ""; text: string; created_at: string;
 };
+
+/** Verdict counts per cell, keyed "<region>:<cell>". */
+export type VerdictSummary = Record<string, Partial<Record<Verdict, number>>>;
+
+export function getVerdicts() {
+  return json<VerdictSummary>("/api/notes/summary");
+}
 
 export function getNotes(region: string, cell: number) {
   return json<Note[]>(`/api/notes?${new URLSearchParams({ region, cell: String(cell) })}`);

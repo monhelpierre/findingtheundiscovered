@@ -7,7 +7,7 @@ Built for the **NASA Space Apps Challenge 2026**, challenge *"Identify Earth Loc
 | Part | What it is | Read |
 |---|---|---|
 | **Backend** | The `analog` pipeline (data, features, scoring, classifier, export) and an optional Django API | [backend/README.md](backend/README.md) |
-| **Frontend** | The web app: map, candidates, criteria radar, validation | [frontend/README.md](frontend/README.md) |
+| **Frontend** | The web app: map in five colour-blind-safe score classes, targets by mission (habitat / landing), one criterion at a time, candidates, criteria radar, field reviews, validation | [frontend/README.md](frontend/README.md) |
 
 ## Contents
 
@@ -246,6 +246,11 @@ Everything else (importing data, Meteomatics, Earth Engine, training, the API): 
 - **Few candidate regions**: add discovery regions away from known analogs; the Earth Engine script can screen whole continents at ~5 km.
 - **Craters fail validation**: add neighbourhood (3–10 km) terrain features.
 - **Known analogs**: 11 of the 23 have *proposed* criteria to review (`criteria_source` in [data/known_analogs.csv](data/known_analogs.csv)).
+- **Static app**: the web app reads files built into the site, and field reviews stay in each browser until they are added to `frontend/public/reviews.json`.
+
+Future work in detail:
+- **Backend** ([backend/README.md](backend/README.md#8-future-work)): an always-on API that serves the data on request and stores field reviews, worldwide data at higher resolution, and a better model that learns from the reviews.
+- **Frontend** ([frontend/README.md](frontend/README.md#7-future-work)): a dynamic app backed by that API, field tools (photos, observed values, offline mode, GPX export), and uncertainty on the map.
 
 
 ## 9. Use of AI

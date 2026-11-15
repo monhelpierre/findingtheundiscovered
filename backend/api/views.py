@@ -6,7 +6,8 @@ GET  /api/regions/<id>               regions/<id>.json (cells, features, exporte
 GET  /api/score?target=&region=&w.<feature>=<weight>
                                      re-score a region for one target with custom weights
 GET  /api/notes?region=&cell=        team notes (newest first)
-POST /api/notes                      add a note (header X-Team-Token required)
+POST /api/notes                      add a note and/or a verdict (header X-Team-Token required)
+GET  /api/notes/summary              verdict counts per cell: {"<region>:<cell>": {"good": n, "bad": n, "unsure": n}}
 """
 
 from __future__ import annotations
@@ -15,6 +16,7 @@ import hmac
 
 from django.conf import settings
 from django.db import connection
+from django.db.models import Count
 from django.http import FileResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -117,3 +119,14 @@ def notes(request):
             return Response({"error": "cell must be an integer"}, status=400)
         qs = qs.filter(cell=int(cell))
     return _cached(Response(NoteSerializer(qs[:200], many=True).data), CACHE_NONE)
+
+
+@api_view(["GET"])
+def notes_summary(request):
+    """What earlier users concluded about each reviewed cell (for badges in the candidate list)."""
+    out: dict[str, dict[str, int]] = {}
+    rows = (CandidateNote.objects.exclude(verdict="").values("region", "cell", "verdict")
+            .annotate(n=Count("id")).order_by())
+    for r in rows:
+        out.setdefault(f"{r['region']}:{r['cell']}", {})[r["verdict"]] = r["n"]
+    return _cached(Response(out), CACHE_NONE)

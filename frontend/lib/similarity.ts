@@ -128,3 +128,68 @@ export function tierOf(scores: CriterionScore[], d: CriteriaDefs): { tier: Tier 
 export function hasCriteria(index: Partial<CriteriaDefs>): index is CriteriaDefs {
   return !!(index.criteria && index.applies && index.feature_criterion && index.thresholds && index.tiers && index.gates);
 }
+
+/** Features of `target` that make up criterion k. */
+export function criterionFeatures(target: Target, k: number, d: CriteriaDefs): string[] {
+  return Object.entries(target.features).filter(([n, s]) => criterionOf(n, s, d) === k).map(([n]) => n);
+}
+
+/** Score of one criterion alone for every cell of a region (same formula as the criteria table:
+ *  the target's features for that criterion only, gates such as vegetation still apply). */
+export function criterionColumn(
+  target: Target, k: number, columns: Record<string, (number | null)[]>, d: CriteriaDefs,
+): (number | null)[] {
+  const names = criterionFeatures(target, k, d);
+  const gates = Object.entries(target.features).filter(([n, s]) => d.gates.includes(n) && criterionOf(n, s, d) === null);
+  const n = columns.cell?.length ?? 0;
+  const out: (number | null)[] = new Array(n);
+  for (let i = 0; i < n; i++) {
+    let open = true;
+    for (const [g, spec] of gates) {
+      const s = featureSimilarity(columns[columnOf(g, spec)]?.[i], spec);
+      if (s === null || s < d.thresholds.met) { open = false; break; }
+    }
+    let num = 0, wsum = 0;
+    if (open) {
+      for (const name of names) {
+        const spec = target.features[name];
+        const x = columns[columnOf(name, spec)]?.[i];
+        if (x === null || x === undefined || Number.isNaN(x)) continue;
+        const w = spec.weight ?? 1;
+        const z = featureZ(x, spec);
+        num += w * z * z;
+        wsum += w;
+      }
+    }
+    out[i] = open && wsum > 0 ? Math.exp((-0.5 * num) / wsum) : null;
+  }
+  return out;
+}
+
+function km(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const r = Math.PI / 180;
+  const a = Math.sin(((lat2 - lat1) * r) / 2) ** 2
+    + Math.cos(lat1 * r) * Math.cos(lat2 * r) * Math.sin(((lon2 - lon1) * r) / 2) ** 2;
+  return 12742 * Math.asin(Math.sqrt(a));
+}
+
+/** Best cells of one region for a score column, like `analog export` does: outside the known-analog
+ *  zones, above min_score, at least min_km apart. */
+export function topCells(
+  values: (number | null)[], columns: Record<string, (number | null)[]>, region: string,
+  { n = 10, minKm = 15, minScore = 0.2, exclusionKm }: { n?: number; minKm?: number; minScore?: number; exclusionKm?: number } = {},
+): { lat: number; lon: number; score: number; cell: number; region: string }[] {
+  const order = values.map((v, i) => [v, i] as const)
+    .filter((p): p is readonly [number, number] => typeof p[0] === "number" && p[0] >= minScore)
+    .sort((a, b) => b[0] - a[0]);
+  const out: { lat: number; lon: number; score: number; cell: number; region: string }[] = [];
+  for (const [score, i] of order) {
+    const near = columns.analog_km?.[i];
+    if (exclusionKm !== undefined && typeof near === "number" && near < exclusionKm) continue;
+    const lat = columns.lat[i] as number, lon = columns.lon[i] as number;
+    if (out.some((c) => km(c.lat, c.lon, lat, lon) < minKm)) continue;
+    out.push({ lat, lon, score: Math.round(score * 1000) / 1000, cell: columns.cell[i] as number, region });
+    if (out.length >= n) break;
+  }
+  return out;
+}

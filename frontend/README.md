@@ -12,6 +12,7 @@ It needs only the JSON written by the pipeline (`analog export`, see [backend/RE
 4. [Configuration](#4-configuration)
 5. [Deployment](#5-deployment)
 6. [Troubleshooting](#6-troubleshooting)
+7. [Future work](#7-future-work)
 
 ---
 
@@ -57,16 +58,24 @@ npm run dev            # http://localhost:3000
 
 | Part | What it does |
 |---|---|
-| **Colour the map by** | Similarity to one Moon or Mars target, or (if trained) the classifier's "any analog" or one analog type |
+| **Colour the map by** | Similarity to one Moon or Mars target (grouped by mission: habitat or landing), or (if trained) the classifier's "any analog" or one analog type |
+| **What to test** | The full mission profile, or **one criterion alone** (geology, terrain, thermal…) compared with the chosen target. The map and the candidate list then show where to test that criterion. The candidates are computed in the browser for the open region (outside the known-analog zones, 15 km apart). Criteria without a measure, or without data in the region, are greyed out |
+| **Legend** | Five score classes, same bounds as the project's thresholds: very low < 0.25, low 0.25–0.50, moderate 0.50–0.70, high 0.70–0.85, very high ≥ 0.85. Colours are five steps of viridis (colour-blind safe). Click a class to keep it and the ones above; the slider does the same in steps of 0.05 |
 | **Target card** | The target's profile: value ± sigma (or ≥ / ≤) and weight per feature. With the backend, each weight is a **slider**: the map and candidates are re-scored for the current region; **Reset weights** goes back |
 | **Classifier card** | Training summary and validation per hidden site, with the **top-10%** pass/fail |
 | **Earth region** | Switches region and lists its layers |
-| **Map** | Satellite imagery with the score grid, the region outline and numbered candidates. Hover for a score; click a cell for details |
-| **Selected cell** | Coordinates and a Google Maps link, then three sections. **Overall score and tier**, with a note if the cell is near a known analog. **Criteria:** a **radar chart** and a table of each criterion's score and band. **Features:** a match bar per feature. With the backend, also **team notes** |
-| **Top candidates** | Best cells across regions, ordered by tier then score, with their tier badge. Click one to fly there |
+| **No time? The idea in 30 seconds** | A card at the top with a 4-step picture of the method (pick a site, measure Earth, classify, shortlist) and what to try first. It can be closed; the browser remembers it |
+| **Map** | Satellite imagery with the score classes, the region outline and numbered candidates (same numbers as the list). Hover for a class and score; click a cell for details. Changing site or criterion zooms to the new candidates. The **Google / Bing / Esri** buttons switch the imagery: Esri has no close-zoom data in many regions, Google and Bing go further (unofficial tile endpoints, fine for research use; use an official provider for a public site) |
+| **Selected cell** | Coordinates and a Google Maps link, then three sections. **Overall score and tier**, with a note if the cell is near a known analog. **Criteria:** a **radar chart** and a table of each criterion's score and band. **Features:** a match bar per feature. Then **field reviews** (below). With the backend, also **team notes** |
+| **Top candidates** | Best cells across regions, ordered by tier then score, with their tier badge, class colour and field-review confidence. Click one to fly there. With one criterion selected: **Where to test**, the best cells of the open region for that criterion |
 | **Footer** | When the data was exported, where it came from (backend or static copy), and **Reload data** |
 
 The layout adapts to phones and follows the system's light or dark theme.
+
+**Field reviews** (no backend needed). Someone who visited a site, or checked it on imagery, says per criterion whether the data shown **matches** what they saw, rates the overall **reliability** from 1 to 5, and can give a verdict and a comment. The reviews of a cell make a **confidence indicator** (high, medium, low, data contested; a site visit counts twice an imagery check), shown on the cell and in the candidate list. Criteria that reviewers say are wrong are flagged in the criteria table.
+
+- A new review is saved **in that browser** only. **Download them** gives a JSON file.
+- To share reviews with everyone, add the downloaded entries to `public/reviews.json` (a JSON array) and redeploy. It lives outside `public/data/`, so `analog export` doesn't overwrite it.
 
 ### 2.3 How it works
 
@@ -94,7 +103,7 @@ npm run sync-data    # copy ../data/export into public/data
 ## 3. Tests
 
 ```bash
-npm test               # Vitest (42 tests, a few seconds)
+npm test               # Vitest (88 tests, a few seconds)
 npm run typecheck      # TypeScript
 ```
 
@@ -103,6 +112,7 @@ npm run typecheck      # TypeScript
 | [`tests/similarity.test.ts`](tests/similarity.test.ts) | Per-feature similarity, criteria grouping, NDVI gate, tiers and bands |
 | [`tests/api.test.ts`](tests/api.test.ts) | Backend-first loading with static fallback (HTML 404, network error), weights as query parameters, team-token header, error messages |
 | [`tests/export-consistency.test.ts`](tests/export-consistency.test.ts) | For every exported candidate, the browser's criteria scores and tier equal Python's |
+| [`tests/criterion-review.test.ts`](tests/criterion-review.test.ts) | Score classes and their bounds; one criterion alone matches Python's per-criterion scores, and its best cells stay apart and outside the known-analog zones; field-review confidence (site visits weigh twice, contested data, shared + local reviews without duplicates) |
 
 ## 4. Configuration
 
@@ -132,3 +142,27 @@ What the site shows is `public/data/`. To publish new results: `analog export` (
 | Footer says "static copy" though the backend runs | The backend wasn't up when `npm run dev` started: restart `npm run dev` (or set `BACKEND_URL`) |
 | `EADDRINUSE` when starting the app | An old server holds the port: stop it or use `npm run dev -- --port 3001` |
 | Hydration warning with attributes like `bis_skin_checked` | A browser extension rewrote the page; try a private window |
+
+## 7. Future work
+
+### 7.1 A dynamic app backed by the API
+
+Today the app is static: all results are JSON files copied into `public/data/` at build time, and new results need a redeploy. Next step: an app that asks the API for everything (see [backend/README.md](../backend/README.md#8-future-work)).
+
+- **Load data on request:** fetch cells for the visible map area, target and criterion instead of whole region files. That allows many more regions, worldwide tiles and finer cells without a heavier site.
+- **Save reviews on the server:** send field reviews to the API instead of keeping them in the browser and sharing a downloaded file. Everyone then sees new reviews and confidence indicators immediately.
+- **Ranking over all regions:** "Where to test" across every region and world tile, computed by the API, not only the open region.
+- **Live updates** after a new export or retraining, without rebuilding the site.
+
+### 7.2 Field work
+
+- **Photos and GPS points** attached to a review, and an observed value next to the satellite one (for example "slope on site: 8°" next to "slope from the DEM: 14°").
+- **Offline use on site:** a phone-friendly mode (PWA) that caches the chosen region and syncs reviews when back online.
+- **Export a field plan:** the selected candidates as GPX/KML with their criteria, to load in a GPS or a mapping app.
+
+### 7.3 Exploring the results
+
+- **Compare two targets or two criteria** side by side, or as a combined map.
+- **Uncertainty on the map:** show how sure each score is (data coverage, model uncertainty, review confidence), not only the score.
+- **An official imagery provider** with an API key (for example MapTiler or Mapbox) for a public deployment, instead of the unofficial Google and Bing tiles.
+- **French and English** interface.

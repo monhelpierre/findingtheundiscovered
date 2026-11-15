@@ -124,6 +124,19 @@ class FixtureExport(TestCase):
         self.assertEqual(got[0]["text"], "Looks good")
         self.assertEqual(self.client.get("/api/notes", {"cell": "x"}).status_code, 400)
 
+    def test_verdicts_are_summarised(self):
+        post = lambda **kw: self.client.post(  # noqa: E731
+            "/api/notes", {"region": "test-region", "cell": 0, "lat": 10, "lon": 10, "author": "Ana", "text": "", **kw},
+            content_type="application/json", HTTP_X_TEAM_TOKEN="secret")
+        self.assertEqual(post().status_code, 400, "a note needs a verdict or a text")
+        self.assertEqual(post(verdict="maybe").status_code, 400)
+        self.assertEqual(post(verdict="good").status_code, 201)
+        self.assertEqual(post(verdict="good", text="Matches the imagery").status_code, 201)
+        self.assertEqual(post(verdict="bad").status_code, 201)
+        self.assertEqual(post(text="just a note").status_code, 201)
+        got = self.client.get("/api/notes/summary").json()
+        self.assertEqual(got, {"test-region:0": {"good": 2, "bad": 1}})
+
 
 REAL_EXPORT = Path(settings.BASE_DIR).parent / "data" / "export"
 

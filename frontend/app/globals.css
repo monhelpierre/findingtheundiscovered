@@ -57,6 +57,15 @@ body.resizing { cursor: col-resize; user-select: none; }
 }
 .mapwrap { position: relative; min-height: 0; }
 .map { position: absolute; inset: 0; }
+.basemap-switch {
+  position: absolute; top: 10px; left: 10px; z-index: 2; display: flex;
+  background: #fff; border-radius: 4px; box-shadow: 0 0 0 2px rgba(0,0,0,.1); overflow: hidden;
+}
+.basemap-switch button {
+  border: 0; background: none; color: #333; font-size: 12px; padding: 5px 9px; cursor: pointer;
+}
+.basemap-switch button + button { border-left: 1px solid #ddd; }
+.basemap-switch button.on { background: #256abf; color: #fff; }
 
 .muted { color: var(--muted); }
 .small { font-size: 12px; }
@@ -87,6 +96,7 @@ button.link { background: none; border: 0; color: var(--accent); cursor: pointer
 .badge.moon { background: var(--moon); }
 .badge.mars { background: var(--mars); }
 .badge.earth { background: var(--accent); }
+.badge.mission { background: transparent; color: var(--ink-2); box-shadow: inset 0 0 0 1px var(--muted); }
 
 table.profile { width: 100%; border-collapse: collapse; font-size: 12px; margin: 6px 0; }
 table.profile th { text-align: left; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--line); padding: 3px 4px; }
@@ -99,7 +109,23 @@ td.num .small { white-space: nowrap; }
 .check { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 10px; cursor: pointer; }
 .check input { margin-top: 3px; }
 
-.legend-bar { height: 12px; border-radius: 4px; }
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; flex: none;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.2); vertical-align: -1px; }
+
+/* Minimum score: the slider track shows the colour scale itself */
+.minscore { margin-top: 10px; }
+.minscore .lbl { margin: 0; }
+input.ramp-range { -webkit-appearance: none; appearance: none; height: 18px; background: transparent; margin: 4px 0; }
+input.ramp-range::-webkit-slider-runnable-track { height: 8px; border-radius: 4px; background: var(--ramp); }
+input.ramp-range::-moz-range-track { height: 8px; border-radius: 4px; background: var(--ramp); }
+input.ramp-range::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 18px; height: 18px; margin-top: -5px; border-radius: 50%;
+  background: var(--surface); border: 3px solid var(--ink); cursor: pointer;
+}
+input.ramp-range::-moz-range-thumb {
+  width: 12px; height: 12px; border-radius: 50%; background: var(--surface); border: 3px solid var(--ink); cursor: pointer;
+}
+input.ramp-range:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 .legend-labels { display: flex; justify-content: space-between; color: var(--ink-2); margin-top: 3px; }
 
 ol.cands { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
@@ -112,7 +138,7 @@ ol.cands button:hover { border-color: var(--accent); }
   width: 22px; height: 22px; border-radius: 50%; display: inline-grid; place-items: center;
   background: var(--accent); color: var(--accent-ink); font-size: 12px; font-weight: 700; flex: none;
 }
-.score { font-weight: 600; font-variant-numeric: tabular-nums; }
+.score { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 .cand-marker {
   width: 24px; height: 24px; border-radius: 50%; border: 2px solid #fff; background: #0d366b; color: #fff;
@@ -151,13 +177,14 @@ footer {
   display: inline-block; min-width: 18px; padding: 0 5px; border-radius: 4px; margin-right: 6px;
   font-weight: 700; font-size: 11px; line-height: 18px; text-align: center; color: #fff;
 }
-.tier-A { background: #1f7a4d; }
-.tier-B { background: #3f8f3a; }
-.tier-C { background: #a67a12; }
-.tier-D { background: #7a7a74; }
+/* Colour-blind safe: blue vs orange (Okabe-Ito) instead of green vs amber; the letter carries the meaning too */
+.tier-A { background: #0b4f8a; }
+.tier-B { background: #2c7fb8; }
+.tier-C { background: #b35000; }
+.tier-D { background: #6b6b66; }
 .band { font-size: 12px; }
-.band-strong, .band-match { color: #1f7a4d; font-weight: 600; }
-.band-near-miss { color: #a67a12; }
+.band-strong, .band-match { color: #0b5ea8; font-weight: 600; }
+.band-near-miss { color: #b35000; }
 .band-mismatch, .band-no-data { color: var(--muted); }
 .note { background: color-mix(in srgb, var(--mars) 12%, transparent); border-left: 3px solid var(--mars); padding: 4px 8px; }
 .criteria { margin: 8px 0; }
@@ -170,8 +197,8 @@ footer {
 .radar-label { font-size: 10px; fill: var(--ink-2); }
 .radar-label.nodata { fill: var(--muted); font-style: italic; }
 @media (prefers-color-scheme: dark) {
-  .band-strong, .band-match { color: #6fcf97; }
-  .band-near-miss { color: #e2b54a; }
+  .band-strong, .band-match { color: #7cb8f2; }
+  .band-near-miss { color: #f0a35a; }
 }
 
 /* Weight sliders and team notes (backend features) */
@@ -239,3 +266,77 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   .orbit-ring, .skeleton, .map-loading { animation: none; }
 }
+
+/* Quick look: the method in one picture */
+.quicklook summary { cursor: pointer; }
+.ql-svg { width: 100%; height: auto; display: block; margin: 8px 0 4px; color: var(--ink); }
+.ql-steps { margin: 4px 0 0; padding-left: 18px; display: grid; gap: 2px; }
+
+/* Reviewer verdicts: icon + label + colour (blue/orange/grey, safe for colour-blind readers) */
+.verdict-good { --v: #0072b2; }
+.verdict-bad { --v: #d55e00; }
+.verdict-unsure { --v: #6b6b66; }
+@media (prefers-color-scheme: dark) {
+  .verdict-good { --v: #56b4e9; }
+  .verdict-bad { --v: #f0a35a; }
+  .verdict-unsure { --v: #9a9993; }
+}
+.verdicts { display: flex; gap: 4px; flex-wrap: wrap; }
+.verdict {
+  flex: 1; padding: 4px 6px; border-radius: 4px; cursor: pointer; font-size: 12px; white-space: nowrap;
+  border: 1px solid var(--v); background: var(--surface); color: var(--v);
+}
+.verdict.on { background: var(--v); color: #fff; font-weight: 600; }
+.verdict-tag {
+  display: inline-block; margin-right: 6px; padding: 0 6px; border-radius: 4px; font-weight: 600;
+  color: var(--v); box-shadow: inset 0 0 0 1px var(--v);
+}
+
+/* Score classes legend (one row per class, click to keep it and the classes above) */
+.legend-title { margin: 0 0 4px; }
+.legend-classes { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.legend-classes button {
+  width: 100%; display: flex; align-items: center; gap: 8px; padding: 3px 6px; text-align: left; font-size: 12px;
+  background: none; border: 1px solid transparent; border-radius: 4px; cursor: pointer;
+}
+.legend-classes button:hover { border-color: var(--line); background: var(--bg); }
+.legend-classes li.off { opacity: .4; }
+.legend-classes li.off strong { text-decoration: line-through; }
+.legend-swatch {
+  display: inline-block; width: 22px; height: 14px; border-radius: 3px; flex: none; vertical-align: -1px; margin-right: 4px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.25);
+}
+
+/* Field reviews and confidence (icon + label, not colour alone) */
+.conf-high { --c: #0072b2; }
+.conf-medium { --c: #56b4e9; }
+.conf-low { --c: #6b6b66; }
+.conf-contested { --c: #d55e00; }
+@media (prefers-color-scheme: dark) {
+  .conf-high { --c: #56b4e9; }
+  .conf-medium { --c: #9fd3f3; }
+  .conf-low { --c: #9a9993; }
+  .conf-contested { --c: #f0a35a; }
+}
+.conf { color: var(--c); font-weight: 700; white-space: nowrap; }
+.conf-card { border-left: 3px solid var(--c); padding: 4px 8px; margin: 4px 0 8px; background: color-mix(in srgb, var(--c) 10%, transparent); }
+.conf-card strong { color: var(--c); }
+.conf-card .verdict-tag { margin-top: 3px; }
+.contested { color: #d55e00; font-weight: 700; }
+.field-review fieldset { border: 0; padding: 0; margin: 0 0 6px; }
+.field-review legend { font-weight: 600; padding: 0; margin-bottom: 3px; }
+.field-review .method {
+  display: inline-block; margin-right: 6px; padding: 0 5px; border-radius: 3px; font-size: 11px;
+  background: var(--line); color: var(--ink-2);
+}
+.seg { display: flex; gap: 3px; }
+.seg button {
+  flex: 1; padding: 3px 6px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface);
+  cursor: pointer; font-size: 12px; white-space: nowrap;
+}
+.seg button.on { background: var(--ink); color: var(--surface); border-color: var(--ink); font-weight: 600; }
+.seg button.on.ok { background: #0072b2; border-color: #0072b2; color: #fff; }
+.seg button.on.wrong { background: #d55e00; border-color: #d55e00; color: #fff; }
+table.checks td { padding: 2px 4px; }
+.btn-small { padding: 3px 8px; border: 1px solid var(--accent); color: var(--accent); background: var(--surface); border-radius: 4px; cursor: pointer; font-size: 12px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
