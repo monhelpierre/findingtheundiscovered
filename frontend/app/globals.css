@@ -57,6 +57,15 @@ body.resizing { cursor: col-resize; user-select: none; }
 }
 .mapwrap { position: relative; min-height: 0; }
 .map { position: absolute; inset: 0; }
+.basemap-switch {
+  position: absolute; top: 10px; left: 10px; z-index: 2; display: flex;
+  background: #fff; border-radius: 4px; box-shadow: 0 0 0 2px rgba(0,0,0,.1); overflow: hidden;
+}
+.basemap-switch button {
+  border: 0; background: none; color: #333; font-size: 12px; padding: 5px 9px; cursor: pointer;
+}
+.basemap-switch button + button { border-left: 1px solid #ddd; }
+.basemap-switch button.on { background: #256abf; color: #fff; }
 
 .muted { color: var(--muted); }
 .small { font-size: 12px; }

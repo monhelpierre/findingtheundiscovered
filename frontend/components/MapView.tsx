@@ -13,8 +13,39 @@ export const RAMP: [number, string][] = [
   [1, "#0d366b"],
 ];
 
-const IMAGERY =
-  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+// Satellite basemaps. Esri has "Map data not yet available" gaps at close zoom
+// in many regions, so the user can switch to Google or Bing imagery there.
+const BASEMAPS = {
+  google: {
+    label: "Google",
+    tiles: [0, 1, 2, 3].map((n) => `https://mt${n}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}`),
+    maxzoom: 20,
+    attribution: "Imagery © Google",
+  },
+  bing: {
+    label: "Bing",
+    tiles: [0, 1, 2, 3].map((n) => `https://ecn.t${n}.tiles.virtualearth.net/tiles/a{quadkey}.jpeg?g=1`),
+    maxzoom: 19,
+    attribution: "Imagery © Microsoft",
+  },
+  esri: {
+    label: "Esri",
+    tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+    maxzoom: 18,
+    attribution: "Imagery © Esri, Maxar, Earthstar Geographics",
+  },
+} as const;
+type BasemapId = keyof typeof BASEMAPS;
+const BASEMAP_IDS = Object.keys(BASEMAPS) as BasemapId[];
+const BASEMAP_KEY = "basemap";
+
+function initialBasemap(): BasemapId {
+  try {
+    const v = localStorage.getItem(BASEMAP_KEY);
+    if (v && v in BASEMAPS) return v as BasemapId;
+  } catch {}
+  return "google";
+}
 
 type Props = {
   region: RegionData | null;
@@ -48,6 +79,8 @@ export default function MapView(p: Props) {
   cb.current = p;
   const lastRegion = useRef<string | null>(null);
   const markers = useRef<maplibregl.Marker[]>([]);
+  const [basemap, setBasemap] = useState<BasemapId>(initialBasemap);
+  const basemapRef = useRef(basemap);
 
   useEffect(() => {
     if (!el.current) return;
@@ -55,13 +88,14 @@ export default function MapView(p: Props) {
       container: el.current,
       style: {
         version: 8,
-        sources: {
-          imagery: {
-            type: "raster", tiles: [IMAGERY], tileSize: 256, maxzoom: 18,
-            attribution: "Imagery © Esri, Maxar, Earthstar Geographics",
-          },
-        },
-        layers: [{ id: "imagery", type: "raster", source: "imagery" }],
+        sources: Object.fromEntries(BASEMAP_IDS.map((id) => [id, {
+          type: "raster" as const, tiles: [...BASEMAPS[id].tiles], tileSize: 256,
+          maxzoom: BASEMAPS[id].maxzoom, attribution: BASEMAPS[id].attribution,
+        }])),
+        layers: BASEMAP_IDS.map((id) => ({
+          id: `basemap-${id}`, type: "raster" as const, source: id,
+          layout: { visibility: id === basemapRef.current ? "visible" as const : "none" as const },
+        })),
       },
       center: [0, 15],
       zoom: 1.4,
@@ -114,6 +148,17 @@ export default function MapView(p: Props) {
       map.current = null;
     };
   }, []);
+
+  // Switch the visible basemap (hidden raster layers fetch no tiles).
+  useEffect(() => {
+    basemapRef.current = basemap;
+    try { localStorage.setItem(BASEMAP_KEY, basemap); } catch {}
+    const m = map.current;
+    if (!m) return;
+    for (const id of BASEMAP_IDS) {
+      m.setLayoutProperty(`basemap-${id}`, "visibility", id === basemap ? "visible" : "none");
+    }
+  }, [basemap]);
 
   // Rebuild cell polygons when the region or the coloured column changes.
   useEffect(() => {
@@ -199,5 +244,23 @@ export default function MapView(p: Props) {
     m.flyTo({ center: [p.focus.lon, p.focus.lat], zoom: Math.max(m.getZoom(), 11), duration: 900 });
   }, [ready, p.focus]);
 
-  return <div ref={el} className="map" />;
+  return (
+    <>
+      <div ref={el} className="map" />
+      <div className="basemap-switch" role="radiogroup" aria-label="Basemap">
+        {BASEMAP_IDS.map((id) => (
+          <button
+            key={id}
+            type="button"
+            role="radio"
+            aria-checked={basemap === id}
+            className={basemap === id ? "on" : ""}
+            onClick={() => setBasemap(id)}
+          >
+            {BASEMAPS[id].label}
+          </button>
+        ))}
+      </div>
+    </>
+  );
 }
