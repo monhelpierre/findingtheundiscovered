@@ -66,7 +66,7 @@ npm run dev            # http://localhost:3000
 | **Earth region** | Switches region and lists its layers |
 | **No time? The idea in 30 seconds** | A card at the top with a 4-step picture of the method (pick a site, measure Earth, classify, shortlist) and what to try first. It can be closed; the browser remembers it |
 | **Map** | Satellite imagery with the score classes, the region outline and numbered candidates (same numbers as the list). Hover for a class and score; click a cell for details. Changing site or criterion zooms to the new candidates. The **Google / Bing / Esri** buttons switch the imagery: Esri has no close-zoom data in many regions, Google and Bing go further (unofficial tile endpoints, fine for research use; use an official provider for a public site) |
-| **Selected cell** | Coordinates and a Google Maps link, then three sections. **Overall score and tier**, with a note if the cell is near a known analog. **Criteria:** a **radar chart** and a table of each criterion's score and band. **Features:** a match bar per feature. Then **field reviews** (below). With the backend, also **team notes** |
+| **Selected cell** | Coordinates and a Google Maps link, then three sections. **Overall score and tier**, with a note if the cell is near a known analog. **Criteria:** a **radar chart** and a table of each criterion's score and band. **Features:** a match bar per feature. Then **field reviews** (below). With the backend, also **team notes**. **Download CSV** saves all of it for that site (site and score, each criterion, each feature with the target value and match, field-review confidence) as a spreadsheet |
 | **Top candidates** | Best cells across regions, ordered by tier then score, with their tier badge, class colour and field-review confidence. Click one to fly there. With one criterion selected: **Where to test**, the best cells of the open region for that criterion |
 | **Footer** | When the data was exported, where it came from (backend or static copy), and **Reload data** |
 
@@ -103,7 +103,7 @@ npm run sync-data    # copy ../data/export into public/data
 ## 3. Tests
 
 ```bash
-npm test               # Vitest (88 tests, a few seconds)
+npm test               # Vitest (90 tests, a few seconds)
 npm run typecheck      # TypeScript
 ```
 
@@ -112,7 +112,7 @@ npm run typecheck      # TypeScript
 | [`tests/similarity.test.ts`](tests/similarity.test.ts) | Per-feature similarity, criteria grouping, NDVI gate, tiers and bands |
 | [`tests/api.test.ts`](tests/api.test.ts) | Backend-first loading with static fallback (HTML 404, network error), weights as query parameters, team-token header, error messages |
 | [`tests/export-consistency.test.ts`](tests/export-consistency.test.ts) | For every exported candidate, the browser's criteria scores and tier equal Python's |
-| [`tests/criterion-review.test.ts`](tests/criterion-review.test.ts) | Score classes and their bounds; one criterion alone matches Python's per-criterion scores, and its best cells stay apart and outside the known-analog zones; field-review confidence (site visits weigh twice, contested data, shared + local reviews without duplicates) |
+| [`tests/criterion-review.test.ts`](tests/criterion-review.test.ts) | Score classes and their bounds; one criterion alone matches Python's per-criterion scores, and its best cells stay apart and outside the known-analog zones; field-review confidence (site visits weigh twice, contested data, shared + local reviews without duplicates); the site CSV export |
 
 ## 4. Configuration
 

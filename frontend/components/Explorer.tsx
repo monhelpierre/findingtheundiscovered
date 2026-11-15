@@ -14,6 +14,7 @@ import {
   modeLabel, normCdf, parseViewKey, pct, tierOf, topCells, valueColumn, viewKey,
 } from "@/lib/similarity";
 import { classOf, classRange, scoreClasses, type ScoreClass } from "@/lib/classes";
+import { cellRows, downloadCsv, toCsv } from "@/lib/cellExport";
 import {
   cellKey, confidence, download, LEVEL_LABEL, loadLocal, loadShared, mergeReviews, newId, saveLocal,
   type Check, type Confidence, type Review,
@@ -623,11 +624,22 @@ function CellDetail({ region, i, target, view, index, score, onClose, classes, s
 }) {
   const c = region.columns;
   const conf = confidence(reviews);
+  const exportCsv = () => {
+    const rows = cellRows({
+      region, i, index, target, score, classes, conf,
+      scoreLabel: scoreLabel ?? (view.kind === "target" ? "overall similarity" : "probability"),
+      regionTitle: index.regions.find((r) => r.id === region.id)?.title,
+    });
+    const what = target ? target.id : view.kind === "class" ? view.cls : "classifier";
+    downloadCsv(`site_${region.id}_${c.cell[i]}_${what}.csv`, toCsv(rows));
+  };
   const featureKeys = target ? Object.keys(target.features) : Object.keys(index.features).filter((k) => k in c);
   return (
     <section className="card detail">
       <div className="row">
         <h2 className="grow">Selected cell</h2>
+        <button type="button" className="btn-small" onClick={exportCsv}
+          title="Site, criteria, features and field reviews as a spreadsheet">Download CSV</button>
         <button className="link" onClick={onClose} aria-label="Close">✕</button>
       </div>
       <p className="small">
