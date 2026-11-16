@@ -199,7 +199,8 @@ def test_earth_engine_band_order_versions():
     from types import SimpleNamespace
 
     from analog import process
-    assert process.gee_band_names(SimpleNamespace(descriptions=(), count=12, name="x.tif")) == process.GEE_BANDS
+    assert process.gee_band_names(SimpleNamespace(descriptions=(), count=16, name="x.tif")) == process.GEE_BANDS
+    assert process.gee_band_names(SimpleNamespace(descriptions=(), count=12, name="x.tif")) == process.GEE_BANDS[:12]
     assert process.gee_band_names(SimpleNamespace(descriptions=(), count=11, name="x.tif")) == process.GEE_BANDS[:11]
     with pytest.raises(SystemExit):
         process.gee_band_names(SimpleNamespace(descriptions=(), count=5, name="x.tif"))
@@ -264,7 +265,7 @@ def test_world_import_tiles_continent_file(project):
     f = project / "analogfeat_earth_test.tif"
     with rasterio.open(f, "w", driver="GTiff", height=h, width=w, count=12, dtype="float32", crs="EPSG:4326",
                        transform=from_origin(0, 50, res, res), nodata=np.nan) as dst:
-        for i, name in enumerate(process.GEE_BANDS, start=1):
+        for i, name in enumerate(process.GEE_BANDS[:12], start=1):  # a 12-band file from before the Moon-base bands
             a = np.full((h, w), vals[name], dtype="float32")
             if name == "water_fraction":
                 a[:, 100:] = 1.0

@@ -36,12 +36,12 @@ FEATURE_CRITERION: dict[str, int] = {
     "albedo": 1, "clay_index": 1, "ferric_index": 1,
     # Terrain (2): slope, roughness and relief describe the land's shape (team schema: slope in 2).
     "slope_mean": 2, "slope_p75": 2, "relief": 2, "roughness": 2,
-    "temp_range": 3, "tmin_k": 3, "tday_range_k": 3, "tyear_range_k": 3, "sun_elev_deg": 3,
-    "water_fraction": 4, "hydrogen_or_soilmoist": 4, "ice_flag": 4,
+    "temp_range": 3, "tmin_k": 3, "tday_range_k": 3, "tyear_range_k": 3, "sun_elev_deg": 3, "low_sun_days": 3,
+    "water_fraction": 4, "hydrogen_or_soilmoist": 4, "ice_flag": 4, "permafrost_class": 4,
     "dust_aod": 5, "wind_ms": 5,
     "aridity_index": 6,  # biology: dossiers only (criterion 6 isn't scored)
     # Operations (8): share of ground at 0-15 deg, where landing, driving and building are possible.
-    "gentle_slope_frac": 8,
+    "gentle_slope_frac": 8, "passable_2km": 8, "passable_10km": 8, "passable_50km": 8,
 }
 GATES = {"ndvi"}  # not a criterion: required bare ground
 

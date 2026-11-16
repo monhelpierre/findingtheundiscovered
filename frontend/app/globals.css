@@ -340,3 +340,11 @@ footer {
 table.checks td { padding: 2px 4px; }
 .btn-small { padding: 3px 8px; border: 1px solid var(--accent); color: var(--accent); background: var(--surface); border-radius: 4px; cursor: pointer; font-size: 12px; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Moon-base sites (sister project) */
+.moonbase .seg .tier { margin-right: 4px; }
+.moonbase h3 { margin: 8px 0 4px; }
+.moonbase details.inline { display: inline; }
+.moonbase details.inline summary { display: inline; cursor: pointer; color: var(--accent); }
+.mb-detail table.profile { margin: 4px 0; }
+ol.cands button.picked { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }

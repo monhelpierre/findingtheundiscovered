@@ -51,6 +51,9 @@ type Props = {
   focus: { lon: number; lat: number; key: number } | null;
   /** Changes when the user picks another site or criterion: zoom out to the new candidates. */
   refit?: number;
+  /** Moon-base sites of the sister project (whole Earth), shown as dots; null hides the layer. */
+  moonbase?: { lat: number; lon: number; tier: string; i: number }[] | null;
+  onMoonbase?: (i: number) => void;
   opacity: number;
   /** Cells scoring below this are hidden (still clickable). */
   minScore: number;
@@ -105,6 +108,7 @@ export default function MapView(p: Props) {
       m.addSource("cells", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
       m.addSource("selected", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
       m.addSource("bbox", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
+      m.addSource("moonbase", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
       m.addLayer({
         id: "cells", type: "fill", source: "cells",
         paint: { "fill-antialias": false, "fill-color": "#000", "fill-opacity": 0 },
@@ -113,6 +117,23 @@ export default function MapView(p: Props) {
         id: "bbox", type: "line", source: "bbox",
         paint: { "line-color": "#ffffff", "line-width": 1.5, "line-dasharray": [3, 2], "line-opacity": 0.8 },
       });
+      // Moon-base sites: tier colours as in the panel (blue = best, orange, grey), white outline.
+      m.addLayer({
+        id: "moonbase", type: "circle", source: "moonbase",
+        paint: {
+          "circle-color": ["match", ["get", "tier"], "Tier 1", "#0b4f8a", "Tier 2", "#2c7fb8", "Tier 3", "#d55e00", "#8d8d86"],
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 1, ["match", ["get", "tier"], "Tier 1", 4, "Tier 2", 3.5, 2],
+            6, ["match", ["get", "tier"], "Tier 1", 8, "Tier 2", 7, 5], 10, 10],
+          "circle-stroke-color": "#ffffff", "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 1, 0.3, 6, 1.2],
+          "circle-opacity": 0.9,
+        },
+      });
+      m.on("click", "moonbase", (e) => {
+        const f = e.features?.[0];
+        if (f && typeof f.id === "number") cb.current.onMoonbase?.(f.id);
+      });
+      m.on("mouseenter", "moonbase", () => { m.getCanvas().style.cursor = "pointer"; });
+      m.on("mouseleave", "moonbase", () => { m.getCanvas().style.cursor = ""; });
       m.addLayer({
         id: "selected-halo", type: "line", source: "selected",
         paint: { "line-color": "#000000", "line-width": 5, "line-opacity": 0.5 },
@@ -122,6 +143,8 @@ export default function MapView(p: Props) {
         paint: { "line-color": "#ffffff", "line-width": 2.5 },
       });
       m.on("click", "cells", (e) => {
+        // A Moon-base dot on top of the cell takes the click.
+        if (m.getLayer("moonbase") && m.queryRenderedFeatures(e.point, { layers: ["moonbase"] }).length) return;
         const f = e.features?.[0];
         if (f && typeof f.id === "number") cb.current.onSelect(f.id);
       });
@@ -238,6 +261,19 @@ export default function MapView(p: Props) {
       return new maplibregl.Marker({ element: d }).setLngLat([c.lon, c.lat]).addTo(m);
     });
   }, [ready, p.candidates]);
+
+  // Moon-base sites layer.
+  useEffect(() => {
+    const m = map.current;
+    if (!ready || !m) return;
+    (m.getSource("moonbase") as GeoJSONSource).setData({
+      type: "FeatureCollection",
+      features: (p.moonbase ?? []).map((d) => ({
+        type: "Feature" as const, id: d.i, properties: { tier: d.tier },
+        geometry: { type: "Point" as const, coordinates: [d.lon, d.lat] },
+      })),
+    });
+  }, [ready, p.moonbase]);
 
   // New site or criterion: show its candidates (or the whole region if none is here).
   const refitDone = useRef(p.refit);

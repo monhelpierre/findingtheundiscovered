@@ -1,5 +1,7 @@
 # Frontend: the web app
 
+**Live app: <https://frontend-henna-mu-96.vip.eu.com>**
+
 The map of [Earth Analog Explorer](../README.md): pick a Moon or Mars target, see how well every ~1 km cell of each study region matches it, and inspect the best candidate sites, criterion by criterion. Next.js 15 (App Router), React 19, MapLibre GL 5, TypeScript.
 
 It needs only the JSON written by the pipeline (`analog export`, see [backend/README.md](../backend/README.md)), which is copied into `public/data/`. It runs as a **static site** (Vercel, Firebase Hosting, any static host). When the optional [Django API](../backend/README.md#3-django-api) is running, it also offers weight sliders and team notes.
@@ -64,6 +66,7 @@ npm run dev            # http://localhost:3000
 | **Target card** | The target's profile: value ± sigma (or ≥ / ≤) and weight per feature. With the backend, each weight is a **slider**: the map and candidates are re-scored for the current region; **Reset weights** goes back |
 | **Classifier card** | Training summary and validation per hidden site, with the **top-10%** pass/fail |
 | **Earth region** | Switches region and lists its layers |
+| **Moon-base sites, whole Earth** | Shown when the export has `moonbase.json` (`analog moonbase`). The sister project's Artemis III Moon-base sites: every 10 km square of land scored, grouped into sites of at most 50 km, as dots coloured by tier (filter by tier). Click a dot or a continent's best site for its six criterion scores, low-sun days, ice and area. A different question from ours: it scores sites against the Artemis III requirements with fixed weights (illumination first), not similarity to one target |
 | **No time? The idea in 30 seconds** | A card at the top with a 4-step picture of the method (pick a site, measure Earth, classify, shortlist) and what to try first. It can be closed; the browser remembers it |
 | **Map** | Satellite imagery with the score classes, the region outline and numbered candidates (same numbers as the list). Hover for a class and score; click a cell for details. Changing site or criterion zooms to the new candidates. The **Google / Bing / Esri** buttons switch the imagery: Esri has no close-zoom data in many regions, Google and Bing go further (unofficial tile endpoints, fine for research use; use an official provider for a public site) |
 | **Selected cell** | Coordinates and a Google Maps link, then three sections. **Overall score and tier**, with a note if the cell is near a known analog. **Criteria:** a **radar chart** and a table of each criterion's score and band. **Features:** a match bar per feature. Then **field reviews** (below). With the backend, also **team notes**. **Download CSV** saves all of it for that site (site and score, each criterion, each feature with the target value and match, field-review confidence) as a spreadsheet |

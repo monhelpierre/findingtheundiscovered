@@ -945,6 +945,415 @@
      ]
     ]
    }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Cinder Lake Crater Field",
+    "analog_type": "basaltic_volcanic",
+    "analog_for": "Moon",
+    "criteria_known_for": [
+     2,
+     8
+    ],
+    "criteria_source": "proposed",
+    "reference": "Craters blasted into volcanic cinders for Apollo astronaut training (Flagstaff, Arizona). From the training-site list of the Moon-base sister project; approximate position (box of +/- 0.05 deg)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -111.52,
+       35.25
+      ],
+      [
+       -111.42,
+       35.25
+      ],
+      [
+       -111.42,
+       35.35
+      ],
+      [
+       -111.52,
+       35.35
+      ],
+      [
+       -111.52,
+       35.25
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Amboy Crater",
+    "analog_type": "basaltic_volcanic",
+    "analog_for": "Moon",
+    "criteria_known_for": [
+     2,
+     8
+    ],
+    "criteria_source": "proposed",
+    "reference": "Cinder cone and lava field used for rover tests (Mojave Desert, California). From the training-site list of the Moon-base sister project; approximate position (box of +/- 0.05 deg)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -115.84,
+       34.49
+      ],
+      [
+       -115.74,
+       34.49
+      ],
+      [
+       -115.74,
+       34.59
+      ],
+      [
+       -115.84,
+       34.59
+      ],
+      [
+       -115.84,
+       34.49
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Teide (Tenerife)",
+    "analog_type": "basaltic_volcanic",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     1,
+     8
+    ],
+    "criteria_source": "proposed",
+    "reference": "Volcanic terrain used for ESA rover tests (Canary Islands). From the training-site list of the Moon-base sister project; approximate position (box of +/- 0.05 deg)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -16.69,
+       28.22
+      ],
+      [
+       -16.59,
+       28.22
+      ],
+      [
+       -16.59,
+       28.32
+      ],
+      [
+       -16.69,
+       28.32
+      ],
+      [
+       -16.69,
+       28.22
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Ny-Alesund (Svalbard)",
+    "analog_type": "polar_cold_desert",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     3,
+     4
+    ],
+    "criteria_source": "proposed",
+    "reference": "Arctic research base used for Mars instrument tests (Svalbard, Norway). From the training-site list of the Moon-base sister project; approximate position (box of +/- 0.05 deg)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       11.88,
+       78.87
+      ],
+      [
+       11.98,
+       78.87
+      ],
+      [
+       11.98,
+       78.97
+      ],
+      [
+       11.88,
+       78.97
+      ],
+      [
+       11.88,
+       78.87
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Kangerlussuaq ice-sheet margin",
+    "analog_type": "polar_cold_desert",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     3,
+     4
+    ],
+    "criteria_source": "proposed",
+    "reference": "Ice-sheet edge and permafrost used for polar and Mars field tests (Greenland). From the training-site list of the Moon-base sister project; approximate position (box of +/- 0.05 deg)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -50.75,
+       66.96
+      ],
+      [
+       -50.65,
+       66.96
+      ],
+      [
+       -50.65,
+       67.06
+      ],
+      [
+       -50.75,
+       67.06
+      ],
+      [
+       -50.75,
+       66.96
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Ramon Crater (D-MARS and AMADEE-20)",
+    "analog_type": "mars_sedimentary",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     1,
+     8
+    ],
+    "criteria_source": "proposed",
+    "reference": "Erosion cirque in the Negev desert, D-MARS and AMADEE-20 Mars simulations (Israel). From the training-site list of the Moon-base sister project; approximate position (box of +/- 0.05 deg)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       34.75,
+       30.55
+      ],
+      [
+       34.85,
+       30.55
+      ],
+      [
+       34.85,
+       30.65
+      ],
+      [
+       34.75,
+       30.65
+      ],
+      [
+       34.75,
+       30.55
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Dhofar (AMADEE-18)",
+    "analog_type": "mars_hyperarid",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     1,
+     8
+    ],
+    "criteria_source": "proposed",
+    "reference": "Hyper-arid desert of the AMADEE-18 Mars simulation (Oman). From the training-site list of the Moon-base sister project; approximate position (box of +/- 0.05 deg)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       53.95,
+       18.75
+      ],
+      [
+       54.05,
+       18.75
+      ],
+      [
+       54.05,
+       18.85
+      ],
+      [
+       53.95,
+       18.85
+      ],
+      [
+       53.95,
+       18.75
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Erfoud (MARS2013)",
+    "analog_type": "mars_sedimentary",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     1,
+     8
+    ],
+    "criteria_source": "proposed",
+    "reference": "Sahara desert edge of the MARS2013 Mars simulation (Morocco). From the training-site list of the Moon-base sister project; approximate position (box of +/- 0.05 deg)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -4.28,
+       31.4
+      ],
+      [
+       -4.18,
+       31.4
+      ],
+      [
+       -4.18,
+       31.5
+      ],
+      [
+       -4.28,
+       31.5
+      ],
+      [
+       -4.28,
+       31.4
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Armash (AMADEE-24)",
+    "analog_type": "mars_sedimentary",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     8
+    ],
+    "criteria_source": "proposed",
+    "reference": "Site of the AMADEE-24 Mars simulation (Ararat plain, Armenia). From the training-site list of the Moon-base sister project; approximate position (box of +/- 0.05 deg)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       44.76,
+       39.72
+      ],
+      [
+       44.86,
+       39.72
+      ],
+      [
+       44.86,
+       39.82
+      ],
+      [
+       44.76,
+       39.82
+      ],
+      [
+       44.76,
+       39.72
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Wadi Rum",
+    "analog_type": "mars_sedimentary",
+    "analog_for": "Mars",
+    "criteria_known_for": [
+     1,
+     2
+    ],
+    "criteria_source": "proposed",
+    "reference": "Sandstone desert used as a Mars landscape and for analog studies (Jordan). From the training-site list of the Moon-base sister project; approximate position (box of +/- 0.05 deg)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       35.37,
+       29.53
+      ],
+      [
+       35.47,
+       29.53
+      ],
+      [
+       35.47,
+       29.63
+      ],
+      [
+       35.37,
+       29.63
+      ],
+      [
+       35.37,
+       29.53
+      ]
+     ]
+    ]
+   }
   }
  ]
 }

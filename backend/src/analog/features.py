@@ -8,6 +8,7 @@ import time
 import numpy as np
 import pandas as pd
 
+from .illumination import low_sun_days
 from .rasterops import combine, files_to_grid, terrain_to_grid
 from .region import Region
 
@@ -33,6 +34,12 @@ FEATURES: dict[str, tuple[str, str, str]] = {
     "tday_range_k": ("Daily temperature range", "K", "Mean day-night range of air temperature (2 m)"),
     "tyear_range_k": ("Yearly temperature range", "K", "Warmest minus coldest monthly mean air temperature"),
     "sun_elev_deg": ("Noon sun elevation", "deg", "Mean noon sun elevation over the year (from latitude)"),
+    "low_sun_days": ("Low-sun days", "days/yr", "Days a year when the noon Sun stays under 10 deg, as at the lunar south pole (from latitude; 0 below ~56 deg, ~107 at the Arctic Circle)"),
+    # Earth Engine (backend/gee/analog_features.js), from the Artemis III Moon-base profile:
+    "permafrost_class": ("Permafrost depth", "class", "3 frozen at the surface, 2 within 50 cm, 1 at 50-100 cm, 0 not frozen (ERA5-Land soil temperature: a layer whose warmest month stays below 0 C)"),
+    "passable_2km": ("Passable ground, 2 km", "fraction", "Share of ground at 0-15 deg within 2 km: walking range of a spacesuit (xEVA)"),
+    "passable_10km": ("Passable ground, 10 km", "fraction", "Share of ground at 0-15 deg within 10 km: range of an unpressurised rover (LTV)"),
+    "passable_50km": ("Passable ground, 50 km", "fraction", "Share of ground at 0-15 deg within 50 km: range of a pressurised rover"),
     "hydrogen_or_soilmoist": ("Soil moisture", "index", "Mean soil moisture index at 5 cm (Earth's stand-in for Moon/Mars hydrogen)"),
     "ice_flag": ("Ice or frozen ground", "0 or 1", "1 if snow or frozen ground on at least 15 days a year"),
     "dust_aod": ("Dust", "AOD", "Mean dust aerosol optical depth at 550 nm"),
@@ -110,6 +117,7 @@ def compute(region: Region) -> pd.DataFrame:
     ulat, inv = np.unique(df["lat"].to_numpy(dtype=float), return_inverse=True)  # one value per grid row
     df["sun_elev_deg"] = np.round(sun_elevation_mean(ulat), 3)[inv]
     feat_cols = feat_cols if "sun_elev_deg" in feat_cols else [*feat_cols, "sun_elev_deg"]
+    df["low_sun_days"] = low_sun_days(df["lat"].to_numpy(dtype=float))
     df.to_parquet(region.dir / "features.parquet", index=False)
     log.info("  wrote features.parquet: %s cells with data, %d feature(s), %.1f s", f"{len(df):,}",
              len(feat_cols), time.perf_counter() - t_start)
@@ -120,4 +128,7 @@ def load(region: Region) -> pd.DataFrame:
     p = region.dir / "features.parquet"
     if not p.exists():
         raise SystemExit(f"No features for {region.id!r}. Run: analog features {region.id}")
-    return pd.read_parquet(p)
+    df = pd.read_parquet(p)
+    if "low_sun_days" not in df and "lat" in df:  # geometry only: older feature tables get it here
+        df["low_sun_days"] = low_sun_days(df["lat"].to_numpy(dtype=float))
+    return df
