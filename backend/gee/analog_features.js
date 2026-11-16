@@ -16,7 +16,7 @@
  *      The candidates, tiers and criteria then appear in the web app like any other region.
  *
  * OUTPUT: one float32 GeoTIFF per site, EPSG:4326, aligned to the same grid as
- * `analog region create` (origin = the bbox's west/north edge, cell = CELL_DEG), with 12 bands.
+ * `analog region create` (origin = the bbox's west/north edge, cell = CELL_DEG), with 16 bands.
  * BAND ORDER IS THE CONTRACT with backend/src/analog/process.py (GEE_BANDS): Earth Engine's
  * GeoTIFF exports don't keep band names. Change both together.
  *
@@ -34,6 +34,16 @@
  *   ferric_index    red / blue reflectance (iron oxides)                    MODIS MCD43A4 NBAR
  *   gentle_slope_frac share of land pixels with slope <= 15 deg (water and   NASADEM 30 m +
  *                   ocean excluded): operations-safe ground                 JRC water mask
+ *   permafrost_class 3 frozen at the surface, 2 within 50 cm, 1 at 50-100 cm, ERA5-Land monthly
+ *                   0 not frozen: a soil layer whose warmest month (2015-2024 soil temperature
+ *                   mean) stays below 0 C is permanently frozen               (~9 km)
+ *   passable_2km    share of ground at 0-15 deg within 2 km (spacesuit)      NASADEM 30 m, 1 km
+ *   passable_10km   ... within 10 km (unpressurised rover)                   NASADEM 30 m, 1 km
+ *   passable_50km   ... within 50 km (pressurised rover)                     NASADEM 30 m, 5 km
+ *
+ * The last four bands come from the Artemis III Moon-base profile of the sister project
+ * (NASA Space Apps 2026, Sherbrooke): same definitions, so both projects' numbers compare.
+ * Files exported before they were added (11 or 12 bands) still import.
  *
  * The terrain definitions are the same as the pipeline's (rasterops.terrain_to_grid): statistics
  * of the 30 m DEM inside each cell. The surface bands come from MODIS (500 m - 1 km) instead of
@@ -69,7 +79,8 @@ var DRIVE_FOLDER = 'analog_gee';
 // ======================================================================
 
 var BANDS = ['elev_mean', 'slope_mean', 'slope_p75', 'roughness', 'relief', 'albedo', 'ndvi',
-             'water_fraction', 'temp_range', 'clay_index', 'ferric_index', 'gentle_slope_frac'];
+             'water_fraction', 'temp_range', 'clay_index', 'ferric_index', 'gentle_slope_frac',
+             'permafrost_class', 'passable_2km', 'passable_10km', 'passable_50km'];
 var GENTLE_SLOPE_DEG = 15;
 
 // Whole-Earth mode: one export per box (all land 56 S - 60 N, NASADEM's coverage).
@@ -127,6 +138,38 @@ function fine30(img, kind, crsTransform) {
   return toCells(mid, second, crsTransform);
 }
 
+// Permafrost depth class from ERA5-Land soil temperature (layers 0-7, 7-28, 28-100 cm), 2015-2024:
+// a layer whose warmest monthly mean stays below 0 C is permanently frozen.
+function permafrostClass() {
+  var col = ee.ImageCollection('ECMWF/ERA5_LAND/MONTHLY_AGGR').filterDate('2015-01-01', '2025-01-01')
+    .select(['soil_temperature_level_1', 'soil_temperature_level_2', 'soil_temperature_level_3'],
+            ['t1', 't2', 't3']);
+  var clim = ee.ImageCollection(ee.List.sequence(1, 12).map(function (m) {
+    return col.filter(ee.Filter.calendarRange(m, m, 'month')).mean();
+  }));
+  var frozen = clim.max().setDefaultProjection(col.first().projection()).lt(273.15);
+  return ee.Image(0).where(frozen.select('t3'), 1).where(frozen.select('t2'), 2)
+    .where(frozen.select('t1'), 3).setDefaultProjection(col.first().projection());
+}
+
+// Passable ground within 2, 10 and 50 km: the walking range of a spacesuit, an unpressurised rover
+// and a pressurised rover. `gentle` is the 30 m land mask at 0-15 deg; averaged to 1 km (and 5 km for
+// 50 km) first, so the neighbourhoods stay small (radius of 2-10 pixels).
+function passable(gentle) {
+  var p1k = ee.Projection('EPSG:4326').atScale(1000);
+  var p5k = ee.Projection('EPSG:4326').atScale(5000);
+  var g300 = gentle.unmask(0).reduceResolution({reducer: ee.Reducer.mean(), maxPixels: 1024})
+    .reproject({crs: 'EPSG:4326', scale: MID_SCALE_M});
+  var g1k = g300.reduceResolution({reducer: ee.Reducer.mean(), maxPixels: 1024}).reproject(p1k);
+  var g5k = g1k.reduceResolution({reducer: ee.Reducer.mean(), maxPixels: 64}).reproject(p5k);
+  function within(img, metres, proj) {
+    return img.reduceNeighborhood({reducer: ee.Reducer.mean(),
+                                   kernel: ee.Kernel.circle({radius: metres, units: 'meters'})})
+      .reproject(proj);
+  }
+  return [within(g1k, 2000, p1k), within(g1k, 10000, p1k), within(g5k, 50000, p5k)];
+}
+
 function features(crsTransform) {
   // --- terrain: statistics of the 30 m DEM inside each cell ---
   var dem = ee.Image('NASA/NASADEM_HGT/001').select('elevation');
@@ -177,6 +220,13 @@ function features(crsTransform) {
   var clay = swir1.divide(swir2).updateMask(swir2.gt(0.01)).clamp(0, 5);
   var ferric = red.divide(blue).updateMask(blue.gt(0.01)).clamp(0, 10);
 
+  var pass = passable(gentle);
+  // Cells smaller than the source (1 km or 5 km): nearest value; larger: mean.
+  function coarse(img) {
+    return img.reduceResolution({reducer: ee.Reducer.mean(), maxPixels: 4096})
+      .reproject({crs: 'EPSG:4326', crsTransform: crsTransform});
+  }
+
   return ee.Image.cat([
     elevMean, slopeMean, slopeP75, roughness, relief,
     toCells(albedo, ee.Reducer.mean(), crsTransform),
@@ -185,7 +235,9 @@ function features(crsTransform) {
     toCells(tempRange, ee.Reducer.mean(), crsTransform),
     toCells(clay, ee.Reducer.mean(), crsTransform),
     toCells(ferric, ee.Reducer.mean(), crsTransform),
-    fine30(gentle, 'mean', crsTransform)
+    fine30(gentle, 'mean', crsTransform),
+    permafrostClass().reproject({crs: 'EPSG:4326', crsTransform: crsTransform}),
+    coarse(pass[0]), coarse(pass[1]), coarse(pass[2])
   ]).rename(BANDS).toFloat();
 }
 

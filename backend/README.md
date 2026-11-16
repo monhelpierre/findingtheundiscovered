@@ -232,7 +232,7 @@ analog run ID
 
    Each continent file is cut into 5° tiles on its own grid (`--tile`), tiles with less than 5% land are skipped (`--min-land`), and each tile becomes a region with scope `world`. Europe gives 56 tiles (560,000 cells) in ~40 s. The export scores every tile like any region but keeps their candidates in a separate list (`candidates_world`, best 25 per target, 15 km apart across tiles), and publishes the cell file only of tiles holding one of those candidates (17 for Europe), so the site stays small. In the app, tick **Worldwide** to switch the candidate list and region menu to them. Re-running `world import` with new continent files adds tiles; existing ones are refilled.
 
-Each file has 12 bands, which become features with the pipeline's own names:
+Each file has 16 bands, which become features with the pipeline's own names (files exported before the last four bands were added, with 11 or 12 bands, still import):
 
 | Features | Source (Earth Engine catalog) |
 |---|---|
@@ -243,6 +243,10 @@ Each file has 12 bands, which become features with the pipeline's own names:
 | **temperature range** (day − night) | MODIS MOD11A2: gives criterion 3 its first Earth data |
 | clay and ferric indices | MODIS MCD43A4 reflectance ratios |
 | share of land at 0–15° slope (criterion 8) | NASADEM 30 m slope, JRC water masked |
+| **permafrost depth class** (criterion 4): 3 frozen at the surface, 2 within 50 cm, 1 at 50–100 cm, 0 not frozen | ERA5-Land monthly soil temperature 2015–2024: a layer whose warmest month stays below 0 °C |
+| **passable ground within 2, 10 and 50 km** (criterion 8): the ranges of a spacesuit, an unpressurised rover and a pressurised rover | the 0–15° land mask above, averaged to 1 km (5 km for 50 km), then over a circle |
+
+The last two rows come from the Artemis III Moon-base profile of the sister project (see section 2.11), with the same definitions so the numbers compare. **They are not in the current world tiles yet:** re-run the script and `analog world import` to get them. Like every feature, they show in the app and count in a target's score only once a target has a value for them.
 
 **Things to know:**
 - **No minerals:** EMIT only covers arid land, so there are no EMIT minerals here. Use the 1 km pipeline (`sync`) where minerals matter.
@@ -398,6 +402,8 @@ How candidates are picked, per target, in each region:
 
 The export is **copied to `frontend/public/data/`** automatically. Commit that folder to update the deployed site.
 
+**Low-sun days** (criterion 3) are added to every region when its features load: the days a year when the noon Sun stays under 10°, as at the lunar south pole. Pure geometry from latitude (0 below ~56°, 107 at the Arctic Circle), same definition as the sister project. Shown in the app; not in any target's score yet.
+
 ### 2.9 Command reference
 
 | Command | What it does | Main options |
@@ -416,6 +422,8 @@ The export is **copied to `frontend/public/data/`** automatically. Commit that f
 | `analog earth-ref build` / `show` | Earth land quantiles for percentile target features | `--source meteomatics\|regions`, `--year`, `--res`, `--offline`, `--regions`, `--only`, `--merge` |
 | `analog train` | Trains the classifier and prints validation | `--regions` / `--all`, `--labels`, `--bags`, `--seed` |
 | `analog export` | Scores every region, writes and publishes the JSON | `--no-rescore` |
+| `analog sensitivity` | Weight sensitivity: top cells kept when each criterion's weights move by ±20% → `data/export/sensitivity.json` | `--top` |
+| `analog moonbase PATH` | Adds the sister project's Moon-base sites to the app → `data/export/moonbase.json` | |
 | `analog run ID... \| --all` | `features`, then `export` | |
 
 ### 2.10 Logs
@@ -430,6 +438,25 @@ Every `analog` command shows its progress on screen and writes a full log to **`
 | All commands | Everything else they print | The exact command line, Python version, how long it took, and the error (or full traceback) when it fails |
 
 The newest 100 log files are kept. `data/logs/` is git-ignored. Set `ANALOG_LOG_DIR` to write logs elsewhere, or `ANALOG_NO_LOG_FILE=1` to skip the file.
+
+### 2.11 Sister project: the Moon-base profile
+
+A second Space Apps 2026 project from Sherbrooke, *Finding the Undiscovered* (MIT), scores **all of Earth's land at 10 km** against the **Artemis III Moon-base requirements**. It sums group scores with fixed weights (Analytic Hierarchy Process: illumination 0.467, water ice 0.277, terrain and mobility 0.160, regolith and soil 0.095), whereas we measure similarity to one Moon or Mars target. Both projects use the same criteria numbers, bands (met at 0.70), tiers, 50 km exclusion and 0–15° passable slope. What we took from it:
+
+| What | Where |
+|---|---|
+| Their 10 extra known analogs and training sites (Cinder Lake, Amboy, Teide, Ny-Ålesund, Kangerlussuaq, Ramon Crater, Dhofar, Erfoud, Armash, Wadi Rum): now excluded from our candidates too, 33 in all. Analog types and criteria are proposed (`criteria_source: proposed`) | `data/known_analogs.csv`, `data/labels/known_analogs.geojson` |
+| Low-sun days (criterion 3) | `illumination.py`, added when features load |
+| Permafrost depth class (criterion 4) and passable ground within 2/10/50 km (criterion 8) | Earth Engine script, section 2.4 |
+| Weight sensitivity check | `analog sensitivity` |
+| Their Moon-base sites, as a layer in the app | `analog moonbase PATH` |
+
+```bash
+analog moonbase ../nasa-hackaton/finding-the-undiscovered/data/processed/sites.parquet   # or their repo folder
+analog sensitivity            # top 100 per target, each criterion's weights x0.8 and x1.2
+```
+
+The Moon-base import refuses their synthetic test output. `analog export` keeps `moonbase.json` and `sensitivity.json`, and both are copied to the app with the rest of the export.
 
 ## 3. Django API
 
@@ -501,9 +528,10 @@ Both run on every push in GitHub Actions ([.github/workflows/ci.yml](../.github/
 
 | Suite | Covers |
 |---|---|
-| [`tests/test_pipeline.py`](tests/test_pipeline.py) | Runs in a temporary project. Similarity maths; the full demo pipeline with the classifier; custom-feature ingest and `target from-dem`; file-name detection; importing a GeoTIFF and a planetary DEM; Earth Engine imports (both band versions); Meteomatics statistics from cached responses; training with excluded features |
+| [`tests/test_pipeline.py`](tests/test_pipeline.py) | Runs in a temporary project. Similarity maths; the full demo pipeline with the classifier; custom-feature ingest and `target from-dem`; file-name detection; importing a GeoTIFF and a planetary DEM; Earth Engine imports (all band versions); Meteomatics statistics from cached responses; training with excluded features |
 | [`tests/test_api.py`](tests/test_api.py) | A small fixture export: health; index (export vs. database); region IDs (including path tricks); scores with tiers, NDVI gate and 50 km exclusion; custom weights; bad requests; notes needing the team token; verdicts and their summary. Also: `/api/score` at default weights reproduces the real export |
 | [`tests/test_labels.py`](tests/test_labels.py) | `data/known_analogs.csv` and `data/labels/known_analogs.geojson` list the same sites with the same fields |
+| [`tests/test_moonbase_profile.py`](tests/test_moonbase_profile.py) | Low-sun days against latitude (and the sister project's value); the new features' criteria; the Moon-base sites import (columns, rounding, refusing synthetic data); the sensitivity check's eligible cells and re-weighting |
 
 ## 5. Configuration and environment variables
 

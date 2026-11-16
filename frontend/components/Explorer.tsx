@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import MapView from "./MapView";
+import MoonbaseCard, { loadMoonbase, MB_TIERS, moonbasePoints, type MoonbaseData } from "./Moonbase";
 import CriteriaRadar from "./CriteriaRadar";
 import { AppSplash, MapLoading } from "./Loader";
 import { CREDITS } from "@/lib/credits";
@@ -55,6 +56,19 @@ export default function Explorer() {
     loadShared().then(setShared);
   }, []);
   const reviews = useMemo(() => mergeReviews(shared, mine), [shared, mine]);
+  // Moon-base sites of the sister project (optional layer; only if the export has moonbase.json)
+  const [mbAvailable, setMbAvailable] = useState(false);
+  const [mbOn, setMbOn] = useState(false);
+  const [mb, setMb] = useState<MoonbaseData | null>(null);
+  const [mbTiers, setMbTiers] = useState<Set<string>>(() => new Set(MB_TIERS.slice(0, 3)));
+  const [mbSel, setMbSel] = useState<number | null>(null);
+  useEffect(() => {
+    fetch("/data/moonbase.json", { method: "HEAD", cache: "no-store" })
+      .then((r) => setMbAvailable(r.ok && (r.headers.get("content-type") ?? "").includes("json")))
+      .catch(() => setMbAvailable(false));
+  }, []);
+  useEffect(() => { if (mbOn && !mb) loadMoonbase().then(setMb); }, [mbOn, mb]);
+  const mbPoints = useMemo(() => (mbOn && mb ? moonbasePoints(mb, mbTiers) : null), [mbOn, mb, mbTiers]);
   const byCell = useMemo(() => {
     const m = new Map<string, Review[]>();
     for (const r of reviews) {
@@ -364,6 +378,14 @@ export default function Explorer() {
           )}
         </section>
 
+        {mbAvailable && (
+          <MoonbaseCard on={mbOn} setOn={setMbOn} data={mb} tiers={mbTiers} setTiers={setMbTiers} selected={mbSel}
+            onPick={(i) => {
+              setMbSel(i);
+              setFocus({ lon: mb!.columns.lon[i] as number, lat: mb!.columns.lat[i] as number, key: Date.now() });
+            }} />
+        )}
+
         <Legend opacity={opacity} setOpacity={setOpacity} classifier={view.kind !== "target"} classes={classes} counts={values ? counts : null}
           minScore={minScore} setMinScore={setMinScore} kept={values ? kept : null} total={region?.n_cells ?? 0} />
 
@@ -460,6 +482,8 @@ export default function Explorer() {
           onHover={setHover}
           candidates={regionCandidates}
           refit={refit}
+          moonbase={mbPoints}
+          onMoonbase={setMbSel}
           onCandidate={pickCandidate}
           focus={focus}
           opacity={opacity}

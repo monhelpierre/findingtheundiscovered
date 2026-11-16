@@ -227,6 +227,18 @@ def cmd_export(args):
     export(rescore=not args.no_rescore)
 
 
+def cmd_sensitivity(args):
+    from .sensitivity import run
+    run(top=args.top)
+
+
+def cmd_moonbase(args):
+    from .export import publish_to_web
+    from .moonbase import import_sites
+    import_sites(Path(args.path))
+    publish_to_web()
+
+
 def cmd_run(args):
     cmd_features(args)
     cmd_export(argparse.Namespace(no_rescore=False))
@@ -366,6 +378,15 @@ def build_parser() -> argparse.ArgumentParser:
     s = sub.add_parser("export", help="score every region and write data/export for the UI")
     s.add_argument("--no-rescore", action="store_true")
     s.set_defaults(func=cmd_export)
+
+    s = sub.add_parser("sensitivity",
+                       help="weight sensitivity: top cells kept when each criterion's weights move by 20%%")
+    s.add_argument("--top", type=int, default=100, help="size of the top list to compare (default 100)")
+    s.set_defaults(func=cmd_sensitivity)
+
+    s = sub.add_parser("moonbase", help="add the sister project's Artemis III Moon-base sites to the web app")
+    s.add_argument("path", help="its sites.parquet or sites_moon.csv (or the repository folder)")
+    s.set_defaults(func=cmd_moonbase)
 
     s = sub.add_parser("demo", help="build the synthetic demo region and export it")
     s.add_argument("--train", action="store_true",

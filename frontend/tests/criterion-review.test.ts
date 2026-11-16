@@ -108,3 +108,14 @@ describe("site CSV export", () => {
     expect(toCsv([{ section: "s", item: 'a, "b"', value: "1" }]).split("\r\n")[1]).toBe('s,"a, ""b""",1,,,,');
   });
 });
+
+describe("Moon-base layer", () => {
+  it("keeps only the chosen tiers, with each site's index", async () => {
+    const { moonbasePoints } = await import("../components/Moonbase");
+    const d = { name: "", method: "", n: 3, criteria: {},
+      columns: { lat: [1, 2, 3], lon: [4, 5, 6], tier: ["Tier 2", "Tier 4", "Tier 3"] } };
+    expect(moonbasePoints(d, new Set(["Tier 2", "Tier 3"]))).toEqual([
+      { lat: 1, lon: 4, tier: "Tier 2", i: 0 }, { lat: 3, lon: 6, tier: "Tier 3", i: 2 },
+    ]);
+  });
+});

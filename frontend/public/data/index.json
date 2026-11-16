@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-15T22:15:48+00:00",
+ "generated": "2026-11-15T23:34:26+00:00",
  "targets": [
   {
    "id": "moon_malapert_massif",
@@ -621,6 +621,11 @@
    "unit": "ratio",
    "description": "Yearly precipitation / evapotranspiration (low = arid)"
   },
+  "low_sun_days": {
+   "label": "Low-sun days",
+   "unit": "days/yr",
+   "description": "Days a year when the noon Sun stays under 10 deg, as at the lunar south pole (from latitude; 0 below ~56 deg, ~107 at the Arctic Circle)"
+  },
   "temp_range": {
    "label": "Temperature range",
    "unit": "K",
@@ -687,7 +692,8 @@
     "ice_flag",
     "dust_aod",
     "wind_ms",
-    "aridity_index"
+    "aridity_index",
+    "low_sun_days"
    ],
    "excluded_cells": 3302
   },
@@ -740,7 +746,8 @@
     "ice_flag",
     "dust_aod",
     "wind_ms",
-    "aridity_index"
+    "aridity_index",
+    "low_sun_days"
    ],
    "excluded_cells": 2275
   },
@@ -803,7 +810,8 @@
     "ice_flag",
     "dust_aod",
     "wind_ms",
-    "aridity_index"
+    "aridity_index",
+    "low_sun_days"
    ],
    "excluded_cells": 2200
   },
@@ -866,7 +874,8 @@
     "ice_flag",
     "dust_aod",
     "wind_ms",
-    "aridity_index"
+    "aridity_index",
+    "low_sun_days"
    ],
    "excluded_cells": 2500
   },
@@ -929,7 +938,8 @@
     "ice_flag",
     "dust_aod",
     "wind_ms",
-    "aridity_index"
+    "aridity_index",
+    "low_sun_days"
    ],
    "excluded_cells": 0
   },
@@ -992,7 +1002,8 @@
     "ice_flag",
     "dust_aod",
     "wind_ms",
-    "aridity_index"
+    "aridity_index",
+    "low_sun_days"
    ],
    "excluded_cells": 2000
   },
@@ -1055,7 +1066,8 @@
     "ice_flag",
     "dust_aod",
     "wind_ms",
-    "aridity_index"
+    "aridity_index",
+    "low_sun_days"
    ],
    "excluded_cells": 2500
   },
@@ -1118,7 +1130,8 @@
     "ice_flag",
     "dust_aod",
     "wind_ms",
-    "aridity_index"
+    "aridity_index",
+    "low_sun_days"
    ],
    "excluded_cells": 2250
   },
@@ -1161,7 +1174,8 @@
     "clay_index",
     "ferric_index",
     "gentle_slope_frac",
-    "sun_elev_deg"
+    "sun_elev_deg",
+    "low_sun_days"
    ],
    "excluded_cells": 0
   },
@@ -1204,7 +1218,8 @@
     "clay_index",
     "ferric_index",
     "gentle_slope_frac",
-    "sun_elev_deg"
+    "sun_elev_deg",
+    "low_sun_days"
    ],
    "excluded_cells": 0
   },
@@ -1247,7 +1262,8 @@
     "clay_index",
     "ferric_index",
     "gentle_slope_frac",
-    "sun_elev_deg"
+    "sun_elev_deg",
+    "low_sun_days"
    ],
    "excluded_cells": 0
   },
@@ -1290,7 +1306,8 @@
     "clay_index",
     "ferric_index",
     "gentle_slope_frac",
-    "sun_elev_deg"
+    "sun_elev_deg",
+    "low_sun_days"
    ],
    "excluded_cells": 0
   },
@@ -1333,7 +1350,8 @@
     "clay_index",
     "ferric_index",
     "gentle_slope_frac",
-    "sun_elev_deg"
+    "sun_elev_deg",
+    "low_sun_days"
    ],
    "excluded_cells": 0
   },
@@ -1376,7 +1394,8 @@
     "clay_index",
     "ferric_index",
     "gentle_slope_frac",
-    "sun_elev_deg"
+    "sun_elev_deg",
+    "low_sun_days"
    ],
    "excluded_cells": 0
   },
@@ -1419,9 +1438,10 @@
     "clay_index",
     "ferric_index",
     "gentle_slope_frac",
-    "sun_elev_deg"
+    "sun_elev_deg",
+    "low_sun_days"
    ],
-   "excluded_cells": 0
+   "excluded_cells": 217
   },
   {
    "id": "world-n35w005",
@@ -1462,7 +1482,8 @@
     "clay_index",
     "ferric_index",
     "gentle_slope_frac",
-    "sun_elev_deg"
+    "sun_elev_deg",
+    "low_sun_days"
    ],
    "excluded_cells": 0
   },
@@ -1505,7 +1526,8 @@
     "clay_index",
     "ferric_index",
     "gentle_slope_frac",
-    "sun_elev_deg"
+    "sun_elev_deg",
+    "low_sun_days"
    ],
    "excluded_cells": 0
   },
@@ -1548,7 +1570,8 @@
     "clay_index",
     "ferric_index",
     "gentle_slope_frac",
-    "sun_elev_deg"
+    "sun_elev_deg",
+    "low_sun_days"
    ],
    "excluded_cells": 0
   },
@@ -1591,7 +1614,8 @@
     "clay_index",
     "ferric_index",
     "gentle_slope_frac",
-    "sun_elev_deg"
+    "sun_elev_deg",
+    "low_sun_days"
    ],
    "excluded_cells": 0
   },
@@ -1634,7 +1658,8 @@
     "clay_index",
     "ferric_index",
     "gentle_slope_frac",
-    "sun_elev_deg"
+    "sun_elev_deg",
+    "low_sun_days"
    ],
    "excluded_cells": 0
   },
@@ -1677,7 +1702,8 @@
     "clay_index",
     "ferric_index",
     "gentle_slope_frac",
-    "sun_elev_deg"
+    "sun_elev_deg",
+    "low_sun_days"
    ],
    "excluded_cells": 0
   },
@@ -1720,7 +1746,8 @@
     "clay_index",
     "ferric_index",
     "gentle_slope_frac",
-    "sun_elev_deg"
+    "sun_elev_deg",
+    "low_sun_days"
    ],
    "excluded_cells": 0
   },
@@ -1763,7 +1790,8 @@
     "clay_index",
     "ferric_index",
     "gentle_slope_frac",
-    "sun_elev_deg"
+    "sun_elev_deg",
+    "low_sun_days"
    ],
    "excluded_cells": 0
   },
@@ -1806,7 +1834,8 @@
     "clay_index",
     "ferric_index",
     "gentle_slope_frac",
-    "sun_elev_deg"
+    "sun_elev_deg",
+    "low_sun_days"
    ],
    "excluded_cells": 0
   },
@@ -1849,7 +1878,8 @@
     "clay_index",
     "ferric_index",
     "gentle_slope_frac",
-    "sun_elev_deg"
+    "sun_elev_deg",
+    "low_sun_days"
    ],
    "excluded_cells": 0
   }
@@ -5179,13 +5209,18 @@
   "tday_range_k": 3,
   "tyear_range_k": 3,
   "sun_elev_deg": 3,
+  "low_sun_days": 3,
   "water_fraction": 4,
   "hydrogen_or_soilmoist": 4,
   "ice_flag": 4,
+  "permafrost_class": 4,
   "dust_aod": 5,
   "wind_ms": 5,
   "aridity_index": 6,
-  "gentle_slope_frac": 8
+  "gentle_slope_frac": 8,
+  "passable_2km": 8,
+  "passable_10km": 8,
+  "passable_50km": 8
  },
  "gates": [
   "ndvi"
@@ -5610,6 +5645,175 @@
    ],
    "lat": -30.32,
    "lon": 139.34
+  },
+  {
+   "name": "Cinder Lake Crater Field",
+   "analog_type": "basaltic_volcanic",
+   "analog_for": "Moon",
+   "criteria_known_for": [
+    2,
+    8
+   ],
+   "bbox": [
+    -111.52,
+    35.25,
+    -111.42,
+    35.35
+   ],
+   "lat": 35.3,
+   "lon": -111.47
+  },
+  {
+   "name": "Amboy Crater",
+   "analog_type": "basaltic_volcanic",
+   "analog_for": "Moon",
+   "criteria_known_for": [
+    2,
+    8
+   ],
+   "bbox": [
+    -115.84,
+    34.49,
+    -115.74,
+    34.59
+   ],
+   "lat": 34.54,
+   "lon": -115.79
+  },
+  {
+   "name": "Teide (Tenerife)",
+   "analog_type": "basaltic_volcanic",
+   "analog_for": "Mars",
+   "criteria_known_for": [
+    1,
+    8
+   ],
+   "bbox": [
+    -16.69,
+    28.22,
+    -16.59,
+    28.32
+   ],
+   "lat": 28.27,
+   "lon": -16.64
+  },
+  {
+   "name": "Ny-Alesund (Svalbard)",
+   "analog_type": "polar_cold_desert",
+   "analog_for": "Mars",
+   "criteria_known_for": [
+    3,
+    4
+   ],
+   "bbox": [
+    11.88,
+    78.87,
+    11.98,
+    78.97
+   ],
+   "lat": 78.92,
+   "lon": 11.93
+  },
+  {
+   "name": "Kangerlussuaq ice-sheet margin",
+   "analog_type": "polar_cold_desert",
+   "analog_for": "Mars",
+   "criteria_known_for": [
+    3,
+    4
+   ],
+   "bbox": [
+    -50.75,
+    66.96,
+    -50.65,
+    67.06
+   ],
+   "lat": 67.01,
+   "lon": -50.7
+  },
+  {
+   "name": "Ramon Crater (D-MARS and AMADEE-20)",
+   "analog_type": "mars_sedimentary",
+   "analog_for": "Mars",
+   "criteria_known_for": [
+    1,
+    8
+   ],
+   "bbox": [
+    34.75,
+    30.55,
+    34.85,
+    30.65
+   ],
+   "lat": 30.6,
+   "lon": 34.8
+  },
+  {
+   "name": "Dhofar (AMADEE-18)",
+   "analog_type": "mars_hyperarid",
+   "analog_for": "Mars",
+   "criteria_known_for": [
+    1,
+    8
+   ],
+   "bbox": [
+    53.95,
+    18.75,
+    54.05,
+    18.85
+   ],
+   "lat": 18.8,
+   "lon": 54.0
+  },
+  {
+   "name": "Erfoud (MARS2013)",
+   "analog_type": "mars_sedimentary",
+   "analog_for": "Mars",
+   "criteria_known_for": [
+    1,
+    8
+   ],
+   "bbox": [
+    -4.28,
+    31.4,
+    -4.18,
+    31.5
+   ],
+   "lat": 31.45,
+   "lon": -4.23
+  },
+  {
+   "name": "Armash (AMADEE-24)",
+   "analog_type": "mars_sedimentary",
+   "analog_for": "Mars",
+   "criteria_known_for": [
+    8
+   ],
+   "bbox": [
+    44.76,
+    39.72,
+    44.86,
+    39.82
+   ],
+   "lat": 39.77,
+   "lon": 44.81
+  },
+  {
+   "name": "Wadi Rum",
+   "analog_type": "mars_sedimentary",
+   "analog_for": "Mars",
+   "criteria_known_for": [
+    1,
+    2
+   ],
+   "bbox": [
+    35.37,
+    29.53,
+    35.47,
+    29.63
+   ],
+   "lat": 29.58,
+   "lon": 35.42
   }
  ],
  "exclusion_km": 50.0

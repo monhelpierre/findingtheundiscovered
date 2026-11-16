@@ -1,0 +1,609 @@
+{
+ "top": 100,
+ "factors": [
+  0.8,
+  1.2
+ ],
+ "min_score": 0.2,
+ "exclusion_km": 50.0,
+ "rows": [
+  {
+   "target": "moon_malapert_massif",
+   "criterion": 1,
+   "features": [
+    "albedo",
+    "min_phyllosilicate",
+    "min_carbonate"
+   ],
+   "factor": 0.8,
+   "top": 42,
+   "kept": 33
+  },
+  {
+   "target": "moon_malapert_massif",
+   "criterion": 1,
+   "features": [
+    "albedo",
+    "min_phyllosilicate",
+    "min_carbonate"
+   ],
+   "factor": 1.2,
+   "top": 42,
+   "kept": 42
+  },
+  {
+   "target": "moon_malapert_massif",
+   "criterion": 2,
+   "features": [
+    "slope_mean",
+    "slope_p75",
+    "roughness",
+    "relief"
+   ],
+   "factor": 0.8,
+   "top": 42,
+   "kept": 33
+  },
+  {
+   "target": "moon_malapert_massif",
+   "criterion": 2,
+   "features": [
+    "slope_mean",
+    "slope_p75",
+    "roughness",
+    "relief"
+   ],
+   "factor": 1.2,
+   "top": 42,
+   "kept": 42
+  },
+  {
+   "target": "moon_malapert_massif",
+   "criterion": 3,
+   "features": [
+    "sun_elev_deg",
+    "tmin_k",
+    "tday_range_k",
+    "temp_range"
+   ],
+   "factor": 0.8,
+   "top": 42,
+   "kept": 42
+  },
+  {
+   "target": "moon_malapert_massif",
+   "criterion": 3,
+   "features": [
+    "sun_elev_deg",
+    "tmin_k",
+    "tday_range_k",
+    "temp_range"
+   ],
+   "factor": 1.2,
+   "top": 42,
+   "kept": 31
+  },
+  {
+   "target": "moon_malapert_massif",
+   "criterion": 4,
+   "features": [
+    "hydrogen_or_soilmoist"
+   ],
+   "factor": 0.8,
+   "top": 42,
+   "kept": 42
+  },
+  {
+   "target": "moon_malapert_massif",
+   "criterion": 4,
+   "features": [
+    "hydrogen_or_soilmoist"
+   ],
+   "factor": 1.2,
+   "top": 42,
+   "kept": 36
+  },
+  {
+   "target": "moon_malapert_massif",
+   "criterion": 8,
+   "features": [
+    "gentle_slope_frac"
+   ],
+   "factor": 0.8,
+   "top": 42,
+   "kept": 42
+  },
+  {
+   "target": "moon_malapert_massif",
+   "criterion": 8,
+   "features": [
+    "gentle_slope_frac"
+   ],
+   "factor": 1.2,
+   "top": 42,
+   "kept": 40
+  },
+  {
+   "target": "moon_mons_mouton_plateau",
+   "criterion": 1,
+   "features": [
+    "albedo",
+    "min_phyllosilicate",
+    "min_carbonate"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 99
+  },
+  {
+   "target": "moon_mons_mouton_plateau",
+   "criterion": 1,
+   "features": [
+    "albedo",
+    "min_phyllosilicate",
+    "min_carbonate"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 99
+  },
+  {
+   "target": "moon_mons_mouton_plateau",
+   "criterion": 2,
+   "features": [
+    "slope_mean",
+    "slope_p75",
+    "roughness",
+    "relief"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 99
+  },
+  {
+   "target": "moon_mons_mouton_plateau",
+   "criterion": 2,
+   "features": [
+    "slope_mean",
+    "slope_p75",
+    "roughness",
+    "relief"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 99
+  },
+  {
+   "target": "moon_mons_mouton_plateau",
+   "criterion": 3,
+   "features": [
+    "sun_elev_deg",
+    "tmin_k",
+    "tday_range_k",
+    "temp_range"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 99
+  },
+  {
+   "target": "moon_mons_mouton_plateau",
+   "criterion": 3,
+   "features": [
+    "sun_elev_deg",
+    "tmin_k",
+    "tday_range_k",
+    "temp_range"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 99
+  },
+  {
+   "target": "moon_mons_mouton_plateau",
+   "criterion": 4,
+   "features": [
+    "hydrogen_or_soilmoist"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 99
+  },
+  {
+   "target": "moon_mons_mouton_plateau",
+   "criterion": 4,
+   "features": [
+    "hydrogen_or_soilmoist"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "moon_mons_mouton_plateau",
+   "criterion": 8,
+   "features": [
+    "gentle_slope_frac"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "moon_mons_mouton_plateau",
+   "criterion": 8,
+   "features": [
+    "gentle_slope_frac"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_jezero",
+   "criterion": 1,
+   "features": [
+    "albedo",
+    "min_phyllosilicate",
+    "min_carbonate",
+    "min_mafic",
+    "min_sulfate",
+    "min_iron_oxide"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 97
+  },
+  {
+   "target": "mars_jezero",
+   "criterion": 1,
+   "features": [
+    "albedo",
+    "min_phyllosilicate",
+    "min_carbonate",
+    "min_mafic",
+    "min_sulfate",
+    "min_iron_oxide"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 99
+  },
+  {
+   "target": "mars_jezero",
+   "criterion": 2,
+   "features": [
+    "slope_mean",
+    "slope_p75",
+    "roughness",
+    "relief"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 99
+  },
+  {
+   "target": "mars_jezero",
+   "criterion": 2,
+   "features": [
+    "slope_mean",
+    "slope_p75",
+    "roughness",
+    "relief"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 98
+  },
+  {
+   "target": "mars_jezero",
+   "criterion": 3,
+   "features": [
+    "sun_elev_deg"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_jezero",
+   "criterion": 3,
+   "features": [
+    "sun_elev_deg"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_jezero",
+   "criterion": 8,
+   "features": [
+    "gentle_slope_frac"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_jezero",
+   "criterion": 8,
+   "features": [
+    "gentle_slope_frac"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_gale_sulfate",
+   "criterion": 1,
+   "features": [
+    "albedo",
+    "min_sulfate",
+    "min_phyllosilicate",
+    "min_iron_oxide"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 98
+  },
+  {
+   "target": "mars_gale_sulfate",
+   "criterion": 1,
+   "features": [
+    "albedo",
+    "min_sulfate",
+    "min_phyllosilicate",
+    "min_iron_oxide"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 99
+  },
+  {
+   "target": "mars_gale_sulfate",
+   "criterion": 2,
+   "features": [
+    "slope_mean",
+    "slope_p75",
+    "roughness",
+    "relief"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 98
+  },
+  {
+   "target": "mars_gale_sulfate",
+   "criterion": 2,
+   "features": [
+    "slope_mean",
+    "slope_p75",
+    "roughness",
+    "relief"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 98
+  },
+  {
+   "target": "mars_gale_sulfate",
+   "criterion": 3,
+   "features": [
+    "sun_elev_deg"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_gale_sulfate",
+   "criterion": 3,
+   "features": [
+    "sun_elev_deg"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_gale_sulfate",
+   "criterion": 8,
+   "features": [
+    "gentle_slope_frac"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_gale_sulfate",
+   "criterion": 8,
+   "features": [
+    "gentle_slope_frac"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 99
+  },
+  {
+   "target": "mars_arcadia_planitia",
+   "criterion": 1,
+   "features": [
+    "albedo"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 99
+  },
+  {
+   "target": "mars_arcadia_planitia",
+   "criterion": 1,
+   "features": [
+    "albedo"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 99
+  },
+  {
+   "target": "mars_arcadia_planitia",
+   "criterion": 2,
+   "features": [
+    "slope_mean",
+    "slope_p75",
+    "roughness",
+    "relief"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 98
+  },
+  {
+   "target": "mars_arcadia_planitia",
+   "criterion": 2,
+   "features": [
+    "slope_mean",
+    "slope_p75",
+    "roughness",
+    "relief"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_arcadia_planitia",
+   "criterion": 3,
+   "features": [
+    "sun_elev_deg",
+    "temp_range"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_arcadia_planitia",
+   "criterion": 3,
+   "features": [
+    "sun_elev_deg",
+    "temp_range"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 99
+  },
+  {
+   "target": "mars_arcadia_planitia",
+   "criterion": 8,
+   "features": [
+    "gentle_slope_frac"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_arcadia_planitia",
+   "criterion": 8,
+   "features": [
+    "gentle_slope_frac"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_meridiani",
+   "criterion": 1,
+   "features": [
+    "albedo",
+    "min_iron_oxide",
+    "min_sulfate"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 99
+  },
+  {
+   "target": "mars_meridiani",
+   "criterion": 1,
+   "features": [
+    "albedo",
+    "min_iron_oxide",
+    "min_sulfate"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_meridiani",
+   "criterion": 2,
+   "features": [
+    "slope_mean",
+    "slope_p75",
+    "roughness",
+    "relief"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_meridiani",
+   "criterion": 2,
+   "features": [
+    "slope_mean",
+    "slope_p75",
+    "roughness",
+    "relief"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_meridiani",
+   "criterion": 3,
+   "features": [
+    "sun_elev_deg"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_meridiani",
+   "criterion": 3,
+   "features": [
+    "sun_elev_deg"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_meridiani",
+   "criterion": 8,
+   "features": [
+    "gentle_slope_frac"
+   ],
+   "factor": 0.8,
+   "top": 100,
+   "kept": 100
+  },
+  {
+   "target": "mars_meridiani",
+   "criterion": 8,
+   "features": [
+    "gentle_slope_frac"
+   ],
+   "factor": 1.2,
+   "top": 100,
+   "kept": 100
+  }
+ ]
+}

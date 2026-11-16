@@ -293,7 +293,9 @@ def process_emit(region: Region, files: list[Path], replace: bool = True) -> lis
 
 GEE_NAME = re.compile(r"^analogfeat_.+\.tif$", re.I)
 GEE_BANDS = ["elev_mean", "slope_mean", "slope_p75", "roughness", "relief", "albedo", "ndvi",
-             "water_fraction", "temp_range", "clay_index", "ferric_index", "gentle_slope_frac"]
+             "water_fraction", "temp_range", "clay_index", "ferric_index", "gentle_slope_frac",
+             "permafrost_class", "passable_2km", "passable_10km", "passable_50km"]
+GEE_BANDS_V2 = GEE_BANDS[:12]  # files exported before the Moon-base bands (permafrost, passable ground)
 GEE_BANDS_V1 = GEE_BANDS[:11]  # files exported before gentle_slope_frac was added
 # Band -> region layer kind. Terrain statistics are already per-cell values, so they enter as
 # custom:<feature> layers (averaged onto the grid like any other layer).
@@ -302,6 +304,8 @@ GEE_KIND = {
     "roughness": "custom:roughness", "relief": "custom:relief", "albedo": "albedo", "ndvi": "ndvi",
     "water_fraction": "water", "temp_range": "temp_range", "clay_index": "clay_index",
     "ferric_index": "ferric_index", "gentle_slope_frac": "custom:gentle_slope_frac",
+    "permafrost_class": "custom:permafrost_class", "passable_2km": "custom:passable_2km",
+    "passable_10km": "custom:passable_10km", "passable_50km": "custom:passable_50km",
 }
 
 
@@ -309,7 +313,7 @@ def gee_band_names(ds) -> list[str]:
     names = [d for d in (ds.descriptions or ()) if d]
     if len(names) == ds.count and all(n in GEE_KIND for n in names):
         return names
-    for bands in (GEE_BANDS, GEE_BANDS_V1):
+    for bands in (GEE_BANDS, GEE_BANDS_V2, GEE_BANDS_V1):
         if ds.count == len(bands):
             return list(bands)
     raise SystemExit(f"{Path(ds.name).name}: expected {len(GEE_BANDS)} bands ({', '.join(GEE_BANDS)}), "

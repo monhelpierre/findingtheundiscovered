@@ -4,6 +4,8 @@
 
 Built for the **NASA Space Apps Challenge 2026**, challenge *"Identify Earth Locations that Analog the Permanent Moon Base Locations and Mars"*.
 
+**Live app: <https://frontend-henna-mu-96.vip.eu.com>**
+
 | Part | What it is | Read |
 |---|---|---|
 | **Backend** | The `analog` pipeline (data, features, scoring, classifier, export) and an optional Django API | [backend/README.md](backend/README.md) |
@@ -16,6 +18,10 @@ Built for the **NASA Space Apps Challenge 2026**, challenge *"Identify Earth Loc
   - [1. Goal](#1-goal)
   - [2. How it works](#2-how-it-works)
   - [3. Data](#3-data)
+    - [3.1 Earth: study regions](#31-earth-study-regions-1-km-cells-downloaded)
+    - [3.2 Earth: worldwide screen](#32-earth-worldwide-screen-5-km-cells-google-earth-engine)
+    - [3.3 Moon and Mars targets](#33-moon-and-mars-targets)
+    - [3.4 Known analogs, Earth reference and the sister project](#34-known-analogs-earth-reference-and-the-sister-project)
   - [4. Method and formulas](#4-method-and-formulas)
     - [4.1 Features](#41-features)
     - [4.2 Model A: similarity to a target](#42-model-a-similarity-to-a-target)
@@ -25,6 +31,8 @@ Built for the **NASA Space Apps Challenge 2026**, challenge *"Identify Earth Loc
   - [5. Metrics and current results](#5-metrics-and-current-results)
     - [5.1 Validation: does the method find sites it has never seen?](#51-validation-does-the-method-find-sites-it-has-never-seen)
     - [5.2 Candidates (similarity index)](#52-candidates-similarity-index)
+    - [5.3 Weight sensitivity](#53-weight-sensitivity)
+    - [5.4 Sister project: the Moon-base profile](#54-sister-project-the-moon-base-profile)
   - [6. Quick start](#6-quick-start)
   - [7. Repository](#7-repository)
   - [8. Limitations and next steps](#8-limitations-and-next-steps)
@@ -44,7 +52,7 @@ Success criteria (from the team brief):
 | Criterion | How we measure it |
 |---|---|
 | At least 3 new candidate sites | Candidates per target after excluding known analogs (section 5.2) |
-| No candidate within 50 km of a known analog | Enforced at export (23 known analogs) |
+| No candidate within 50 km of a known analog | Enforced at export (33 known analogs) |
 | Known analogs, hidden from the model, rank in the top 10% | Leave-one-site-out validation (section 5.1) |
 | Every candidate explained | Per-criterion scores, radar chart and per-feature match bars in the app |
 | Code and method public; demo runs in a browser | This repository (MIT); the static web app |
@@ -73,15 +81,49 @@ Success criteria (from the team brief):
 
 ## 3. Data
 
-| Dataset | Gives | Used for |
-|---|---|---|
-| **SRTM** 30 m elevation (NASA) | slope, steep slope, share of gentle ground, roughness, relief | Terrain (2), operations (8) |
-| **HLS** Harmonized Landsat-Sentinel 30 m (NASA) | albedo, NDVI, water, clay and ferric band ratios | Geology (1), bare-ground gate |
-| **EMIT** L2B minerals (NASA, ISS) | clays, sulfates, carbonates, iron oxides, mafic minerals | Geology (1) |
-| **CRISM** summary products (NASA, Mars) | the same mineral groups on Mars | Mars targets |
-| **LOLA / MOLA / HRSC** DEMs via Moon & Mars Trek | terrain profiles of targets (`analog target from-dem`) | Moon/Mars targets |
-| **Meteomatics** Weather API (Space Apps offer) | lowest temperature, daily and yearly range, soil moisture, frozen ground, dust, wind, aridity | Thermal (3), water & ice (4), surface processes (5) |
-| **Google Earth Engine** (NASADEM, MODIS, JRC) | the same features for any place on Earth, without downloads | Discovery regions, whole-Earth screening |
+Every source: where it comes from, exactly what the pipeline asks for, and why we chose it. The parameters are the defaults in the code (`backend/src/analog/fetch.py`, `meteomatics.py`, `backend/gee/analog_features.js`); the options in [backend/README.md](backend/README.md#29-command-reference) change them.
+
+### 3.1 Earth: study regions (~1 km cells, downloaded)
+
+| Dataset | Link | What we request (parameters) | Gives | Why this one |
+|---|---|---|---|---|
+| **SRTM GL1** v003, 30 m elevation (NASA / USGS LP DAAC) | <https://lpdaac.usgs.gov/products/srtmgl1v003/> | `earthaccess` search: `short_name="SRTMGL1"`, `version="003"`, the region's bounding box. Every tile is used | mean slope, 75th-percentile slope, roughness, relief, share of land at 0–15°, elevation (display only) | The free, near-global 30 m elevation model (60° N–56° S): fine enough to measure slope and roughness inside a 1 km cell, and close to the resolution of the Moon and Mars models we compare with |
+| **HLS L30** v2.0, Harmonized Landsat-Sentinel 30 m (NASA LP DAAC) | <https://lpdaac.usgs.gov/products/hlsl30v002/> | `short_name="HLSL30"`, `version="2.0"`, dates `2024-03-01` to `2025-10-31`, cloud cover ≤ 10%, up to 500 scenes; per MGRS tile, the 2 scenes with the most coverage and fewest clouds. Bands B02, B04, B05, B06, B07 and the Fmask cloud/water mask | albedo (Liang 2001), NDVI, water fraction, clay index (SWIR1/SWIR2), ferric index (red/blue) | 30 m surface reflectance, atmospherically corrected and identical for Landsat and Sentinel-2. Albedo and the band ratios tell what the ground is made of; NDVI checks that it is bare, like the Moon and Mars. Low cloud cover and two scenes per tile fill the gaps of a single pass |
+| **EMIT L2B** mineral identification (NASA LP DAAC, on the ISS) | <https://lpdaac.usgs.gov/products/emitl2bminv001/> | `short_name="EMITL2BMIN"`, the region's bounding box, all dates (or `--start`/`--end`), up to 5 granules, the newest collection version of each acquisition. A pixel counts as a detection when its band depth is ≥ 0.08 (`backend/config/mineral_groups.yaml`) | share of clays, sulfates, carbonates, iron oxides and mafic minerals per cell | The only free imaging spectrometer that names minerals from orbit (60 m), in the same mineral groups CRISM maps on Mars. It covers arid land only (~52° N–52° S), which is where most analogs are |
+| **Meteomatics Weather API** (Space Apps 2026 data offer) | <https://api.meteomatics.com>; parameter list: <https://www.meteomatics.com/en/api/available-parameters/> | Daily values for one year (`--year 2024`) on a 0.05° grid over the region, in 12 monthly requests. Parameters: `t_min_2m_24h:C`, `t_max_2m_24h:C`, `wind_speed_mean_10m_24h:ms`, `dust_aod_550nm:idx`, `soil_moisture_index_-5cm:idx`, `precip_24h:mm`, `evapotranspiration_24h:mm`, `snow_depth:cm`, `frost_depth:cm` | lowest temperature, daily and yearly temperature range, soil moisture, frozen ground (≥ 15 days a year), dust, wind, aridity | One consistent source for every climate quantity the criteria need (thermal 3, water and ice 4, dust and wind 5), anywhere on Earth, from one API, free for the challenge. A full year of daily values captures the extremes |
+| **Noon sun elevation, low-sun days** | computed, no download | from each cell's latitude: the mean noon elevation over the year, and the days when the noon Sun stays under 10° | criterion 3 (illumination) | Pure geometry, so every cell has it with no data. Low-sun days is the Artemis III illumination measure of the sister project |
+
+### 3.2 Earth: worldwide screen (~5 km cells, Google Earth Engine)
+
+Script `backend/gee/analog_features.js`: one export per continent, cells of 0.05°, MODIS medians over `2024-01-01` to `2025-01-01` (daily products sampled on days 1, 9, 17 and 25 of each month).
+
+| Dataset (Earth Engine ID) | Link | Gives | Why this one |
+|---|---|---|---|
+| **NASADEM** 30 m (`NASA/NASADEM_HGT/001`) | <https://developers.google.com/earth-engine/datasets/catalog/NASA_NASADEM_HGT_001> | the same terrain statistics as SRTM, plus passable ground within 2, 10 and 50 km | NASA's reprocessed SRTM: the same definitions as in the study regions, so the scores compare |
+| **MODIS MCD43A3** albedo (`MODIS/061/MCD43A3`) | <https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MCD43A3> | white-sky shortwave albedo | Global and daily with no download; 500 m instead of HLS's 30 m |
+| **MODIS MOD13A1** vegetation (`MODIS/061/MOD13A1`) | <https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13A1> | NDVI (bare-ground check) | Same reason |
+| **MODIS MOD11A2** land surface temperature (`MODIS/061/MOD11A2`) | <https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD11A2> | day − night surface temperature range | The thermal criterion's Earth-wide measure where there is no Meteomatics data |
+| **MODIS MCD43A4** reflectance (`MODIS/061/MCD43A4`) | <https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MCD43A4> | clay and ferric indices (bands 6/7 and 1/3) | The same band ratios as with HLS, everywhere |
+| **JRC Global Surface Water** v1.4 (`JRC/GSW1_4/GlobalSurfaceWater`) | <https://developers.google.com/earth-engine/datasets/catalog/JRC_GSW1_4_GlobalSurfaceWater> | water fraction (water ≥ 50% of the time); also masks water out of the passable ground | Decades of Landsat water history at 30 m, so lakes and coasts don't pass as flat bare ground |
+| **ERA5-Land** monthly (`ECMWF/ERA5_LAND/MONTHLY_AGGR`), 2015–2024 | <https://developers.google.com/earth-engine/datasets/catalog/ECMWF_ERA5_LAND_MONTHLY_AGGR> | permafrost depth class: the shallowest soil layer (0–7, 7–28, 28–100 cm) whose warmest month stays below 0 °C | Ten years of soil temperature, consistent across continents; the sister project's measure of ice for the Moon base |
+
+### 3.3 Moon and Mars targets
+
+| Dataset | Link | What we use | Why |
+|---|---|---|---|
+| **LOLA** (Moon), **MOLA** and **HRSC** (Mars) elevation models, through NASA Moon Trek and Mars Trek | <https://trek.nasa.gov/moon/>, <https://trek.nasa.gov/mars/> | GeoTIFF clips around a site, turned into the same terrain statistics as on Earth (`analog target from-dem`) | The reference elevation models of each body; Trek clips any site without mission-specific tools |
+| **CRISM** MTRDR summary products (Mars Reconnaissance Orbiter), PDS Geosciences Node | <https://ode.rsl.wustl.edu/mars/> | spectral parameters (e.g. OLINDEX3, D2300) turned into the same mineral groups as EMIT (`analog import FOLDER --target mars_jezero`) | Measured minerals for a Mars target instead of estimates (Jezero so far) |
+| **Values from the literature** (LRO Diviner temperatures, LEND and Lunar Prospector hydrogen, mission reports) | sources noted next to each value in [`backend/config/targets.yaml`](backend/config/targets.yaml) | estimated values and percentiles, marked as estimates | Where no measured map has been clipped yet; to be replaced by measurements |
+
+### 3.4 Known analogs, Earth reference and the sister project
+
+| Dataset | Link | What we use | Why |
+|---|---|---|---|
+| **Known analog sites** | [`data/known_analogs.csv`](data/known_analogs.csv), outlines in [`data/labels/known_analogs.geojson`](data/labels/known_analogs.geojson) | 33 sites: 23 from the team, 10 training sites from the sister project (approximate positions) | They train and test the classifier, and 50 km around them is excluded so every result is new |
+| **Earth reference percentiles** | Meteomatics, 5° global grid, land between 56° S and 72° N, days 1, 9, 17 and 25 of each month of 2024 (`analog earth-ref build`) | where a cell's climate ranks among Earth's land | Earth can't reach the Moon's extremes, so some features compare ranks instead of values |
+| **Moon-base sites**, *Finding the Undiscovered* (MIT) | <https://github.com/The-Djomekou/finding-the-undiscovered> (`data/processed/sites.parquet`) | 18,516 sites scored against Artemis III, shown as a layer in the app (`analog moonbase`) | A whole-Earth answer to the Moon-base question, next to our target-by-target one |
+
+**Accounts:** SRTM, HLS and EMIT need a free NASA Earthdata login (<https://urs.earthdata.nasa.gov>); Meteomatics needs the challenge credentials; Earth Engine needs a free non-commercial account (<https://code.earthengine.google.com/register>).
 
 How to add each dataset: [backend/README.md](backend/README.md#24-adding-data).
 
@@ -154,7 +196,7 @@ $$
 
 For each target, in each region:
 
-1. **Exclude** every cell within **50 km** of any of the 23 known analogs (distance to the site's box).
+1. **Exclude** every cell within **50 km** of any of the 33 known analogs (distance to the site's box).
 2. **Qualify:** overall score ≥ 0.2 and at least one criterion met.
 3. **Rank** by tier (A first), then score; keep cells **≥ 15 km apart**; keep the best 25 across regions.
 
@@ -166,7 +208,7 @@ For each target, in each region:
 
 ## 5. Metrics and current results
 
-8 study regions, 19,725 cells; 23 known analogs (17,027 cells lie within 50 km of one and are never candidates).
+8 study regions, 19,725 cells; 33 known analogs (17,027 cells lie within 50 km of one and are never candidates).
 
 ### 5.1 Validation: does the method find sites it has never seen?
 
@@ -210,6 +252,25 @@ After the 50 km exclusion, per target:
 
 Every target has **at least 3 new candidates** in the study regions, all outside the known-analog zones. Only two regions produce candidates (the Atacama's southern edge and Haiti's north-west), because the other study regions were drawn around known analogs; **discovery regions** (Earth Engine or new downloads) are the way to more results.
 
+### 5.3 Weight sensitivity
+
+`analog sensitivity` multiplies every feature weight of one criterion by 0.8, then 1.2, re-scores the study regions, and counts how many of the target's 100 best eligible cells stay in the top 100 (the check the sister project uses for its weights):
+
+| Target | Eligible top cells | Kept (worst case) |
+|---|---|---|
+| Malapert Massif | 42 | 31–42 (criterion 3 × 1.2) |
+| Mons Mouton Plateau | 100 | 99–100 |
+| Jezero Crater | 100 | 97–100 |
+| Gale Crater | 100 | 98–100 |
+| Arcadia Planitia | 100 | 98–100 |
+| Meridiani Planum | 100 | 99–100 |
+
+The Mars rankings are stable. Malapert's is not yet: only 42 cells qualify, all close to the thresholds, so a 20% change in the thermal or geology weights reorders up to a quarter of them. That is one more sign that the study regions hold no good Malapert analog (section 5.2).
+
+### 5.4 Sister project: the Moon-base profile
+
+*Finding the Undiscovered*, a second Sherbrooke project, scores all of Earth's land at 10 km against the Artemis III Moon-base requirements with fixed weights (illumination first). It finds 18,516 sites; the best are near the Arctic Circle (West Greenland, Baffin Island). The app shows them as a layer (**Moon-base sites, whole Earth**), next to our target-by-target results. We also took its 10 extra known analogs, its low-sun days, permafrost and passable-ground features, and its weight-sensitivity check ([backend/README.md](backend/README.md#211-sister-project-the-moon-base-profile)).
+
 These numbers change with every `analog train` / `analog export`; the app always shows the current ones.
 
 ## 6. Quick start
@@ -245,7 +306,7 @@ Everything else (importing data, Meteomatics, Earth Engine, training, the API): 
 - **Criteria 3–5 are partly scored**: criterion 3 (thermal) and, for the Moon, 4 (hydrogen) use percentile values (section 4.2), mostly estimates; Mars water, dust and wind percentiles are still to set (from Mars Odyssey GRS, MCD/TES).
 - **Few candidate regions**: add discovery regions away from known analogs; the Earth Engine script can screen whole continents at ~5 km.
 - **Craters fail validation**: add neighbourhood (3–10 km) terrain features.
-- **Known analogs**: 11 of the 23 have *proposed* criteria to review (`criteria_source` in [data/known_analogs.csv](data/known_analogs.csv)).
+- **Known analogs**: 21 of the 33 have *proposed* criteria and types to review (the 10 added from the sister project's training sites have approximate positions) (`criteria_source` in [data/known_analogs.csv](data/known_analogs.csv)).
 - **Static app**: the web app reads files built into the site, and field reviews stay in each browser until they are added to `frontend/public/reviews.json`.
 
 Future work in detail:
@@ -268,6 +329,12 @@ No AI-generated images, data or results: every number in this README comes from 
 
 ## 10. Team and license
 
-Team (NASA Space Apps Challenge 2026, Sherbrooke local event): Guilhem, Eli, Meriem, Monhel, Leea.
+Team (NASA Space Apps Challenge 2026, Sherbrooke local event):
 
-**License:** MIT ([LICENSE](LICENSE)). Data credits: NASA LP DAAC (SRTM, HLS, EMIT), NASA JPL / PDS (CRISM, LOLA, MOLA), ESA, Meteomatics, and the Google Earth Engine catalog datasets (NASADEM, MODIS, JRC Global Surface Water).
+- **Eli:** conceptualization, methodology, investigation, writing (original draft)
+- **Meriem:** methodology, investigation, final written package and proofreading
+- **Guilhem:** methodology, final written package and proofreading
+- **Monhel:** machine learning, frontend design, project deployment
+- **Leea:** final written package and proofreading
+
+**License:** MIT ([LICENSE](LICENSE)). Data credits: NASA LP DAAC (SRTM, HLS, EMIT), NASA JPL / PDS (CRISM, LOLA, MOLA), ESA, Meteomatics, and the Google Earth Engine catalog datasets (NASADEM, MODIS, JRC Global Surface Water, ERA5-Land). Moon-base sites: *Finding the Undiscovered* (MIT).
